@@ -17,10 +17,10 @@
 
 ## File-based project format:
 *.iws
-/build
 ## Plugin-specific files:
 
 # IntelliJ
 out/
 /fabric.properties
 
+/build
