@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="AvatarView">
+		<attr name="avBorderColor" format="color|reference" />
+		<attr name="avBackgroundColor" format="color|reference" />
+		<attr name="avOutlineColor" format="color|reference" />
+		<attr name="avBorderWidth" format="dimension" />
+		<attr name="avTextSizePercentage" format="float" />
+		<attr name="avVolumetricDrawable" format="boolean" />
+		<attr name="avVolumetricPlaceholder" format="boolean" />
+		<attr name="android:fontFamily" />
+		<attr name="iconDrawableScale" format="float"/>
+		<attr name="placeholderText" format="string"/>
+		<attr name="android:src"/>
+	</declare-styleable>
+
+</resources>
