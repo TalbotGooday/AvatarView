@@ -32,18 +32,18 @@ Settle the AvatarView somewhere in your XML like this:
 
 ```xml
 <com.goodayapps.widget.AvatarView
-	android:id="@+id/avatarView1"
+	android:id="@+id/avatarView"
 	android:layout_width="@dimen/avatar_size"
 	android:layout_height="@dimen/avatar_size"
-	android:src="@drawable/ic_launcher_foreground"
-	app:avBackgroundColor="@color/colorPrimary"
-	app:avBorderColor="@color/colorAccent"
-	app:avBorderWidth="5dp"
-	app:avVolumetricType="all"
-	app:avAvatarMargin="5dp"
-	app:avTextSizePercentage=".7"
-	app:iconDrawableScale=".7"
-	app:placeholderText="AV" />
+	android:src="drawable"
+	app:avBackgroundColor="color|reference"
+	app:avBorderColor="color|reference"
+	app:avBorderWidth="dimension"
+	app:avVolumetricType="none|all|drawable|placeholder"
+	app:avAvatarMargin="dimension"
+	app:avTextSizePercentage="float"
+	app:iconDrawableScale="float"
+	app:placeholderText="string" />
 ```
 
 ## License
