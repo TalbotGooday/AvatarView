@@ -18,6 +18,14 @@ allprojects {
 	}
 }
 ```
+
+Add the dependency:
+```Groovy
+dependencies {
+      implementation 'com.github.TalbotGooday:AvatarView:x.x.x'
+}
+```
+
 ## Code example
 
 Settle the AvatarView somewhere in your XML like this:
@@ -37,14 +45,6 @@ Settle the AvatarView somewhere in your XML like this:
 	app:iconDrawableScale=".7"
 	app:placeholderText="AV" />
 ```
-
-Add the dependency:
-```Groovy
-dependencies {
-      implementation 'com.github.TalbotGooday:AvatarView:x.x.x'
-}
-```
-
 
 ## License
 
