@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import com.goodayapps.widget.AvatarDrawable
 import com.goodayapps.widget.AvatarView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -40,10 +41,8 @@ class MainActivity : AppCompatActivity() {
 		})
 		avBorderWidth.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
 			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-				val newSize = (convertDpToPixel(1) * progress)
-
 				applyToAvatars {
-					it.borderWidth = newSize
+					it.borderWidth = convertDpToPixel(progress)
 				}
 			}
 		})
@@ -56,14 +55,22 @@ class MainActivity : AppCompatActivity() {
 				}
 			}
 		})
-		avBackgroundGradientEnabled.setOnCheckedChangeListener { _, isChecked ->
-			applyToAvatars {
-				it.backgroundGradient = isChecked
+		avAvatarMargin.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				applyToAvatars {
+					it.avatarMargin = convertDpToPixel(progress)
+				}
 			}
-		}
-		avGradientEnabled.setOnCheckedChangeListener { _, isChecked ->
+		})
+
+		avVolumetric.setOnCheckedChangeListener { _, checkedId ->
 			applyToAvatars {
-				it.avatarGradient = isChecked
+				it.volumetricType = when (checkedId) {
+					R.id.avVolumetricAll -> AvatarDrawable.VolumetricType.ALL
+					R.id.avVolumetricDrawable -> AvatarDrawable.VolumetricType.DRAWABLE
+					R.id.avVolumetricPlaceholder -> AvatarDrawable.VolumetricType.PLACEHOLDER
+					else -> AvatarDrawable.VolumetricType.NONE
+				}
 			}
 		}
 	}

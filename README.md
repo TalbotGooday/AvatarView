@@ -31,8 +31,9 @@ Settle the AvatarView somewhere in your XML like this:
 	app:avBackgroundColor="@color/colorPrimary"
 	app:avBorderColor="@color/colorAccent"
 	app:avBorderWidth="5dp"
-	app:avVolumetricDrawable="false"
-	app:avVolumetricPlaceholder="false"
+	app:avVolumetricType="all"
+	app:avAvatarMargin="5dp"
+	app:avTextSizePercentage=".7"
 	app:iconDrawableScale=".7"
 	app:placeholderText="AV" />
 ```

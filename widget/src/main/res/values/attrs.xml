@@ -3,11 +3,15 @@
 	<declare-styleable name="AvatarView">
 		<attr name="avBorderColor" format="color|reference" />
 		<attr name="avBackgroundColor" format="color|reference" />
-		<attr name="avOutlineColor" format="color|reference" />
 		<attr name="avBorderWidth" format="dimension" />
 		<attr name="avTextSizePercentage" format="float" />
-		<attr name="avVolumetricDrawable" format="boolean" />
-		<attr name="avVolumetricPlaceholder" format="boolean" />
+		<attr name="avVolumetricType" format="enum" >
+			<enum name="none" value="-1"/>
+			<enum name="all" value="0"/>
+			<enum name="drawable" value="1"/>
+			<enum name="placeholder" value="2"/>
+		</attr>
+		<attr name="avAvatarMargin" format="dimension"/>
 		<attr name="android:fontFamily" />
 		<attr name="iconDrawableScale" format="float"/>
 		<attr name="placeholderText" format="string"/>

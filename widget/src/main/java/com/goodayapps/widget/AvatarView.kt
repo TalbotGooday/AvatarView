@@ -11,6 +11,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
+import androidx.annotation.Dimension
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.res.ResourcesCompat
@@ -38,6 +39,8 @@ open class AvatarView : AppCompatImageView {
 			field = value
 			postInvalidate()
 		}
+
+	@Dimension(unit = Dimension.PX)
 	var borderWidth: Int = 0
 		set(value) {
 			field = value
@@ -54,6 +57,18 @@ open class AvatarView : AppCompatImageView {
 			postInvalidate()
 		}
 	var textSizePercentage: Float = DEFAULT_TEXT_SIZE_PERCENTAGE
+		set(value) {
+			field = value
+			postInvalidate()
+		}
+
+	@Dimension(unit = Dimension.PX)
+	var avatarMargin: Int = 0
+		set(value) {
+			field = value
+			postInvalidate()
+		}
+	var volumetricType: AvatarDrawable.VolumetricType = AvatarDrawable.VolumetricType.ALL
 		set(value) {
 			field = value
 			postInvalidate()
@@ -111,7 +126,7 @@ open class AvatarView : AppCompatImageView {
 	override fun dispatchDraw(canvas: Canvas?) {
 		super.dispatchDraw(canvas)
 
-		val size = measuredWidth.coerceAtMost(measuredHeight).coerceAtLeast(context.convertDpToPixel(10)).toFloat()
+		val size = measuredWidth.coerceAtMost(measuredHeight).coerceAtLeast(context.convertDpToPixel(10))
 
 		val newDrawable = AvatarDrawable(AvatarDrawable.Options().apply {
 			this.avatarDrawable = drawable
@@ -119,7 +134,7 @@ open class AvatarView : AppCompatImageView {
 			this.size = size
 			this.textColor = this@AvatarView.textColor
 			val textSizeFin = if (this@AvatarView.textSize <= 0f) {
-				size / 3
+				size / 3f
 			} else {
 				this@AvatarView.textSize
 			}
@@ -127,10 +142,10 @@ open class AvatarView : AppCompatImageView {
 			this.borderColor = this@AvatarView.borderColor
 			this.backgroundPlaceholderColor = this@AvatarView.backgroundPlaceholderColor
 			this.borderWidth = this@AvatarView.borderWidth
-			this.backgroundGradient = this@AvatarView.backgroundGradient
-			this.avatarGradient = this@AvatarView.avatarGradient
+			this.volumetricType = this@AvatarView.volumetricType
 			this.textTypeface = this@AvatarView.textTypeface
 			this.iconDrawableScale = this@AvatarView.iconDrawableScale
+			this.avatarMargin = this@AvatarView.avatarMargin
 		})
 
 		canvas?.let { newDrawable.draw(it) }
@@ -142,10 +157,11 @@ open class AvatarView : AppCompatImageView {
 		borderColor = typedArray.getColor(R.styleable.AvatarView_avBorderColor, borderColor)
 		borderWidth = typedArray.getDimensionPixelSize(R.styleable.AvatarView_avBorderWidth, borderWidth)
 		textSizePercentage = typedArray.getFloat(R.styleable.AvatarView_avTextSizePercentage, DEFAULT_TEXT_SIZE_PERCENTAGE)
-		avatarGradient = typedArray.getBoolean(R.styleable.AvatarView_avVolumetricDrawable, false)
-		backgroundGradient = typedArray.getBoolean(R.styleable.AvatarView_avVolumetricPlaceholder, false)
+		volumetricType = AvatarDrawable.VolumetricType.from(typedArray.getInt(R.styleable.AvatarView_avVolumetricType, -1))
 		placeholderText = typedArray.getText(R.styleable.AvatarView_placeholderText)
 		iconDrawableScale = typedArray.getFloat(R.styleable.AvatarView_iconDrawableScale, iconDrawableScale)
+		avatarMargin = typedArray.getDimensionPixelSize(R.styleable.AvatarView_avAvatarMargin, avatarMargin)
+
 		val typefaceId = typedArray.getResourceId(R.styleable.AvatarView_android_fontFamily, 0)
 		if (typefaceId != 0) {
 			textTypeface = ResourcesCompat.getFont(this.context, typefaceId)

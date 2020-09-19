@@ -8,11 +8,11 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.annotation.ColorInt
+import androidx.annotation.Dimension
 
-@Suppress("DEPRECATION")
 class AvatarDrawable(
 		placeholderText: CharSequence?,
-		private val size: Float,
+		private val size: Int,
 		private val textSize: Float,
 		private val borderWidth: Int,
 		private val backgroundColor: Int = Color.BLACK,
@@ -20,12 +20,10 @@ class AvatarDrawable(
 		private val borderColor: Int = Color.BLACK,
 		private val avatarDrawable: Drawable?,
 		private val iconDrawableScale: Float = .5f,
-		private val backgroundGradient: Boolean = false,
-		private val avatarGradient: Boolean = false,
+		private val volumetricType: VolumetricType = VolumetricType.ALL,
 		private val textTypeface: Typeface? = null,
+		private val avatarMargin: Int = 0,
 ) : Drawable() {
-	private val sizeInt
-		get() = size.toInt()
 	private var textLayout: StaticLayout? = null
 
 	private var namePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -35,10 +33,13 @@ class AvatarDrawable(
 		if (textTypeface != null) {
 			this.typeface = textTypeface
 		}
+		this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
 	}
 
 	private var avatarBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
 		this.color = backgroundColor
+		this.isAntiAlias = true
+		this.style = Paint.Style.FILL
 	}
 
 	private val gradientPaint = Paint().apply {
@@ -56,8 +57,9 @@ class AvatarDrawable(
 
 	private val borderPaint = Paint().apply {
 		this.isAntiAlias = true
-		this.style = Paint.Style.FILL
+		this.style = Paint.Style.STROKE
 		this.color = borderColor
+		this.strokeWidth = borderWidth.toFloat()
 	}
 
 	private val clipPaint = Paint().apply {
@@ -65,8 +67,8 @@ class AvatarDrawable(
 		this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
 	}
 
-	private var bufferBitmap: Bitmap
-	private var bufferCanvas: Canvas
+	private var bufferBitmap: Bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+	private var bufferCanvas: Canvas = Canvas(bufferBitmap)
 
 	private var textWidth = 0f
 	private var textHeight = 0f
@@ -74,58 +76,56 @@ class AvatarDrawable(
 
 	private var circleRadius = 0f
 	private var circleCenter = 0f
+	private var backgroundCircleRadius = 0f
 
 	constructor(options: Options) : this(
 			options.placeholderText,
 			options.size,
 			options.textSize,
-			options.borderWidth,
+			options.borderWidth.coerceAtMost(options.size / 2),
 			options.backgroundPlaceholderColor,
 			options.textColor,
 			options.borderColor,
 			options.avatarDrawable,
 			options.iconDrawableScale,
-			options.backgroundGradient,
-			options.avatarGradient,
-			options.textTypeface
+			options.volumetricType,
+			options.textTypeface,
+			options.avatarMargin.coerceAtMost(options.size / 2)
 	)
 
 	init {
-		bufferBitmap = Bitmap.createBitmap(sizeInt, sizeInt, Bitmap.Config.ARGB_8888)
-		bufferCanvas = Canvas(bufferBitmap)
-		circleRadius = (size / 2.0f) - borderWidth
-		circleCenter = size / 2f
+		circleRadius = (size / 2.0f)
+		circleCenter = circleRadius
+		backgroundCircleRadius = circleRadius - avatarMargin - borderWidth
 
 		textLayout = placeholderText?.let {
-			StaticLayout(
-					it,
-					namePaint,
-					sizeInt,
-					Layout.Alignment.ALIGN_CENTER,
-					1f,
-					1f,
-					false
-			)
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+				StaticLayout.Builder.obtain(it, 0, it.length, namePaint, size)
+						.setAlignment(Layout.Alignment.ALIGN_CENTER)
+						.setLineSpacing(1f, 1f)
+						.setIncludePad(false)
+						.build()
+			} else {
+				StaticLayout(
+						it,
+						namePaint,
+						size,
+						Layout.Alignment.ALIGN_CENTER,
+						1f,
+						1f,
+						false
+				)
+			}
 		}?.also {
 			if (it.lineCount > 0) {
 				textLeft = it.getLineLeft(0)
 				textWidth = it.getLineWidth(0)
-				textHeight = it.getLineBottom(0).toFloat()
+				textHeight = it.getLineBottom(it.lineCount - 1).toFloat()
 			}
 		}
 	}
 
 	override fun draw(canvas: Canvas) {
-		//Draw Border
-		if (borderWidth > 0) {
-			canvas.drawCircle(
-					(circleRadius + borderWidth),
-					(circleRadius + borderWidth),
-					(circleRadius + borderWidth),
-					borderPaint
-			)
-		}
-
 		canvas.save()
 		canvas.translate(bounds.left.toFloat(), bounds.top.toFloat())
 
@@ -133,7 +133,9 @@ class AvatarDrawable(
 
 		val avatarBitmap: Bitmap? = when (avatarDrawable) {
 			is BitmapDrawable -> {
-				ThumbnailUtils.extractThumbnail(avatarDrawable.bitmap, sizeInt, sizeInt)
+				val bitmapSize = size - avatarMargin
+
+				ThumbnailUtils.extractThumbnail(avatarDrawable.bitmap, bitmapSize, bitmapSize)
 			}
 			is Drawable -> {
 				isIconDrawable = true
@@ -155,13 +157,26 @@ class AvatarDrawable(
 			}
 		}
 
-		//Draw border
-		bufferCanvas.drawCircle(circleCenter, circleCenter, circleRadius, borderPaint)
+		//Drawing a background circle and a clip circle for the avatar
+		bufferCanvas.drawCircle(circleCenter, circleCenter, backgroundCircleRadius, avatarBackgroundPaint)
 
 		if (avatarBitmap == null) {
 			drawPlaceholder()
 		} else {
 			drawBitmap(isIconDrawable, avatarBitmap)
+		}
+
+		//Draw volumetric gradient
+		drawVolume(avatarBitmap != null)
+
+		//Draw Border
+		if (borderWidth > 0) {
+			bufferCanvas.drawCircle(
+					circleCenter,
+					circleCenter,
+					circleRadius - (borderWidth / 2),
+					borderPaint
+			)
 		}
 
 		canvas.drawBitmap(bufferBitmap, Matrix(), null)
@@ -171,40 +186,35 @@ class AvatarDrawable(
 	private fun drawBitmap(isIconDrawable: Boolean, avatarBitmap: Bitmap) {
 		if (isIconDrawable) {
 			//Draw background
-			bufferCanvas.drawCircle(circleCenter, circleCenter, circleRadius, avatarBackgroundPaint)
 
-			val left = (size - avatarBitmap.width) / 2f
-			val top = (size - avatarBitmap.height) / 2f
+			val left = ((size - avatarBitmap.width) / 2f)
+			val top = ((size - avatarBitmap.height) / 2f)
 
 			bufferCanvas.drawBitmap(avatarBitmap, left, top, clipPaint)
 		} else {
 			bufferCanvas.drawBitmap(avatarBitmap, Matrix(), clipPaint)
 		}
-
-		//Draw gradient
-		if (avatarGradient) {
-			bufferCanvas.drawCircle(circleCenter, circleCenter, circleRadius, gradientPaint)
-		}
 	}
 
 	private fun drawPlaceholder() {
-		//Draw background
-		bufferCanvas.drawCircle(circleCenter, circleCenter, circleRadius, avatarBackgroundPaint)
-
-		//Draw gradient
-		if (backgroundGradient) {
-			bufferCanvas.drawCircle(circleCenter, circleCenter, circleRadius, gradientPaint)
-		}
-
 		//Draw text
 		if (textLayout != null) {
+			bufferCanvas.save()
 			bufferCanvas.translate((size - textWidth) / 2 - textLeft, (size - textHeight) / 2)
 			textLayout?.draw(bufferCanvas)
+			bufferCanvas.restore()
 		}
 	}
 
-	override fun setAlpha(alpha: Int) {
+	private fun drawVolume(isDrawable: Boolean) {
+		if (volumetricType == VolumetricType.NONE) return
+		if (volumetricType == VolumetricType.DRAWABLE && isDrawable.not()) return
+		if (volumetricType == VolumetricType.PLACEHOLDER && isDrawable) return
 
+		bufferCanvas.drawCircle(circleCenter, circleCenter, backgroundCircleRadius, gradientPaint)
+	}
+
+	override fun setAlpha(alpha: Int) {
 	}
 
 	override fun setColorFilter(colorFilter: ColorFilter?) {
@@ -224,14 +234,33 @@ class AvatarDrawable(
 
 		@ColorInt
 		var borderColor: Int = Color.BLACK
-		var textSize: Float = 33f
-		var size: Float = 133f
+
+		@Dimension(unit = Dimension.PX)
+		var textSize: Float = 0f
+
+		@Dimension(unit = Dimension.PX)
+		var size: Int = 0
+
+		@Dimension(unit = Dimension.PX)
 		var borderWidth: Int = 33
 		var placeholderText: CharSequence? = "?"
 		var avatarDrawable: Drawable? = null
 		var iconDrawableScale: Float = .5f
-		var backgroundGradient: Boolean = false
-		var avatarGradient: Boolean = false
+		var volumetricType: VolumetricType = VolumetricType.ALL
 		var textTypeface: Typeface? = null
+
+		@Dimension(unit = Dimension.PX)
+		var avatarMargin: Int = 0
+	}
+
+	enum class VolumetricType(val value: Int) {
+		NONE(-1),
+		ALL(0),
+		DRAWABLE(1),
+		PLACEHOLDER(2);
+
+		companion object {
+			fun from(value: Int) = values().firstOrNull { it.value == value } ?: NONE
+		}
 	}
 }

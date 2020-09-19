@@ -25,11 +25,12 @@
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
 			android:src="@drawable/ic_launcher_foreground"
+			app:avAvatarMargin="5dp"
 			app:avBackgroundColor="@color/colorPrimary"
 			app:avBorderColor="@color/colorAccent"
 			app:avBorderWidth="5dp"
-			app:avVolumetricDrawable="false"
-			app:avVolumetricPlaceholder="false"
+			app:avTextSizePercentage=".7"
+			app:avVolumetricType="all"
 			app:iconDrawableScale=".7"
 			app:placeholderText="AV" />
 
@@ -40,9 +41,7 @@
 			android:src="@drawable/avatar"
 			app:avBackgroundColor="@color/colorPrimary"
 			app:avBorderColor="@color/colorAccent"
-			app:avBorderWidth="5dp"
-			app:avVolumetricDrawable="false"
-			app:avVolumetricPlaceholder="false" />
+			app:avBorderWidth="5dp" />
 
 		<com.goodayapps.widget.AvatarView
 			android:id="@+id/avatarView3"
@@ -52,8 +51,6 @@
 			app:avBackgroundColor="@color/colorPrimary"
 			app:avBorderColor="@color/colorAccent"
 			app:avBorderWidth="5dp"
-			app:avVolumetricDrawable="false"
-			app:avVolumetricPlaceholder="false"
 			app:iconDrawableScale=".7"
 			app:placeholderText="AV" />
 	</LinearLayout>
@@ -148,19 +145,88 @@
 			android:progress="100" />
 	</LinearLayout>
 
-	<androidx.appcompat.widget.SwitchCompat
-		android:id="@+id/avBackgroundGradientEnabled"
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="avVolumetricBG"
+		android:orientation="horizontal">
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="avAvatarMargin"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<SeekBar
+			android:id="@+id/avAvatarMargin"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:max="15"
+			android:progress="0" />
+	</LinearLayout>
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:text="avVolumetricType:"
 		android:textColor="@android:color/white"
 		tools:ignore="HardcodedText" />
 
-	<androidx.appcompat.widget.SwitchCompat
-		android:id="@+id/avGradientEnabled"
+	<View
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="avVolumetricDrawable"
-		android:textColor="@android:color/white"
-		tools:ignore="HardcodedText" />
+		android:layout_height="1dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="8dp"
+		android:alpha=".1"
+		android:background="@android:color/white" />
+
+	<RadioGroup
+		android:id="@+id/avVolumetric"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<RadioButton
+			android:id="@+id/avVolumetricNone"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:buttonTint="@android:color/white"
+			android:checked="true"
+			android:text="none"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<RadioButton
+			android:id="@+id/avVolumetricAll"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:buttonTint="@android:color/white"
+			android:text="all"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<RadioButton
+			android:id="@+id/avVolumetricDrawable"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:buttonTint="@android:color/white"
+			android:text="drawable"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<RadioButton
+			android:id="@+id/avVolumetricPlaceholder"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:buttonTint="@android:color/white"
+			android:text="placeholder"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+	</RadioGroup>
 </LinearLayout>
