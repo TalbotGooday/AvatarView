@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private inline fun applyToAvatars(action: (AvatarView) -> Unit) {
-		arrayOf(avatarView1, avatarView2, avatarView3).forEach { action.invoke(it) }
+		arrayOf(avatarView0, avatarView1, avatarView2, avatarView3).forEach { action.invoke(it) }
 	}
 
 	private fun convertDpToPixel(dp: Int): Int {

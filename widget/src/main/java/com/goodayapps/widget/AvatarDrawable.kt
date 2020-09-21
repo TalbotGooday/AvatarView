@@ -242,7 +242,7 @@ class AvatarDrawable(
 		var size: Int = 0
 
 		@Dimension(unit = Dimension.PX)
-		var borderWidth: Int = 33
+		var borderWidth: Int = 0
 		var placeholderText: CharSequence? = "?"
 		var avatarDrawable: Drawable? = null
 		var iconDrawableScale: Float = .5f

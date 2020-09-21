@@ -21,13 +21,19 @@
 		android:showDividers="middle">
 
 		<com.goodayapps.widget.AvatarView
+			android:id="@+id/avatarView0"
+			android:layout_width="@dimen/avatar_size"
+			android:layout_height="@dimen/avatar_size"
+			android:src="@drawable/ic_round_bug_report" />
+
+		<com.goodayapps.widget.AvatarView
 			android:id="@+id/avatarView1"
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
 			android:src="@drawable/ic_launcher_foreground"
 			app:avAvatarMargin="5dp"
 			app:avBackgroundColor="@color/colorPrimary"
-			app:avBorderColor="@color/colorAccent"
+			app:avBorderColor="#4D8989A8"
 			app:avBorderWidth="5dp"
 			app:avTextSizePercentage=".7"
 			app:avVolumetricType="all"
@@ -38,7 +44,7 @@
 			android:id="@+id/avatarView2"
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
-			android:src="@drawable/avatar"
+			android:src="@drawable/avatar1"
 			app:avBackgroundColor="@color/colorPrimary"
 			app:avBorderColor="@color/colorAccent"
 			app:avBorderWidth="5dp" />
