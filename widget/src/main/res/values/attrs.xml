@@ -2,6 +2,8 @@
 <resources>
 	<declare-styleable name="AvatarView">
 		<attr name="avBorderColor" format="color|reference" />
+		<attr name="avBorderColorSecondary" format="color|reference" />
+		<attr name="avBorderGradientAngle" format="integer" />
 		<attr name="avBackgroundColor" format="color|reference" />
 		<attr name="avBorderWidth" format="dimension" />
 		<attr name="avTextSizePercentage" format="float" />

@@ -9,6 +9,8 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
+import kotlin.math.cos
+import kotlin.math.sin
 
 class AvatarDrawable(
 		placeholderText: CharSequence?,
@@ -18,6 +20,8 @@ class AvatarDrawable(
 		private val backgroundColor: Int = Color.BLACK,
 		private val textColor: Int = Color.WHITE,
 		private val borderColor: Int = Color.BLACK,
+		private val borderColorSecondary: Int? = null,
+		private val borderGradientAngle: Int = 0,
 		private val avatarDrawable: Drawable?,
 		private val iconDrawableScale: Float = .5f,
 		private val volumetricType: VolumetricType = VolumetricType.ALL,
@@ -26,7 +30,7 @@ class AvatarDrawable(
 ) : Drawable() {
 	private var textLayout: StaticLayout? = null
 
-	private var namePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+	private var placeholderPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
 		this.textSize = this@AvatarDrawable.textSize
 		this.color = textColor
 
@@ -34,6 +38,18 @@ class AvatarDrawable(
 			this.typeface = textTypeface
 		}
 		this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
+	}
+
+	private var textOverPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+		this.textSize = this@AvatarDrawable.textSize
+		this.color = textColor
+
+		if (textTypeface != null) {
+			this.typeface = textTypeface
+		}
+		this.style = Paint.Style.FILL
+
+		this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
 	}
 
 	private var avatarBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -58,13 +74,21 @@ class AvatarDrawable(
 	private val borderPaint = Paint().apply {
 		this.isAntiAlias = true
 		this.style = Paint.Style.STROKE
-		this.color = borderColor
 		this.strokeWidth = borderWidth.toFloat()
+		this.shader = getGradientShader(borderColor, borderColorSecondary ?: borderColor)
+	}
+
+	private val textOverBackgroundPaint = Paint().apply {
+		this.isAntiAlias = true
+		this.style = Paint.Style.STROKE
+		this.strokeWidth = borderWidth * 2f
+		this.shader = getGradientShader(Color.TRANSPARENT, Color.GREEN)
 	}
 
 	private val clipPaint = Paint().apply {
 		this.color = Color.WHITE
 		this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
+		this.style = Paint.Style.FILL_AND_STROKE
 	}
 
 	private var bufferBitmap: Bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -86,6 +110,8 @@ class AvatarDrawable(
 			options.backgroundPlaceholderColor,
 			options.textColor,
 			options.borderColor,
+			options.borderColorSecondary,
+			options.borderGradientAngle,
 			options.avatarDrawable,
 			options.iconDrawableScale,
 			options.volumetricType,
@@ -96,11 +122,11 @@ class AvatarDrawable(
 	init {
 		circleRadius = (size / 2.0f)
 		circleCenter = circleRadius
-		backgroundCircleRadius = circleRadius - avatarMargin - borderWidth
+		backgroundCircleRadius = circleRadius - avatarMargin - (borderWidth * .90f)
 
 		textLayout = placeholderText?.let {
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-				StaticLayout.Builder.obtain(it, 0, it.length, namePaint, size)
+				StaticLayout.Builder.obtain(it, 0, it.length, placeholderPaint, size)
 						.setAlignment(Layout.Alignment.ALIGN_CENTER)
 						.setLineSpacing(1f, 1f)
 						.setIncludePad(false)
@@ -108,7 +134,7 @@ class AvatarDrawable(
 			} else {
 				StaticLayout(
 						it,
-						namePaint,
+						placeholderPaint,
 						size,
 						Layout.Alignment.ALIGN_CENTER,
 						1f,
@@ -174,13 +200,43 @@ class AvatarDrawable(
 			bufferCanvas.drawCircle(
 					circleCenter,
 					circleCenter,
-					circleRadius - (borderWidth / 2),
+					circleRadius - (borderWidth / 2f),
 					borderPaint
 			)
 		}
 
+		//TODO drawTextOver()
+
 		canvas.drawBitmap(bufferBitmap, Matrix(), null)
 		canvas.restore()
+	}
+
+	private fun drawTextOver() {
+		val radius = circleRadius - borderWidth
+		bufferCanvas.drawCircle(
+				circleCenter,
+				circleCenter,
+				radius,
+				textOverBackgroundPaint
+		)
+
+		val path = Path()
+		bufferCanvas.save()
+		bufferCanvas.rotate((borderGradientAngle + 45).toFloat(), circleCenter, circleCenter)
+		path.addCircle(circleCenter, circleCenter, radius, Path.Direction.CCW)
+		bufferCanvas.drawTextOnPath("#OPENTOWORK", path, 0f, 0f, textOverPaint)
+		bufferCanvas.restore()
+	}
+
+	override fun setAlpha(alpha: Int) {
+	}
+
+	override fun setColorFilter(colorFilter: ColorFilter?) {
+
+	}
+
+	override fun getOpacity(): Int {
+		return PixelFormat.TRANSLUCENT
 	}
 
 	private fun drawBitmap(isIconDrawable: Boolean, avatarBitmap: Bitmap) {
@@ -214,15 +270,29 @@ class AvatarDrawable(
 		bufferCanvas.drawCircle(circleCenter, circleCenter, backgroundCircleRadius, gradientPaint)
 	}
 
-	override fun setAlpha(alpha: Int) {
-	}
+	private fun getGradientShader(@ColorInt colorStart: Int, @ColorInt colorEnd: Int): LinearGradient {
+		val angleInRadians = Math.toRadians(borderGradientAngle.toDouble())
+		val length = size
 
-	override fun setColorFilter(colorFilter: ColorFilter?) {
+		val r = size / 2f
+		val centerX: Float = length / 2f
+		val centerY: Float = length / 2f
 
-	}
+		val startX = 0.0.coerceAtLeast(size.toDouble().coerceAtMost(centerX - r * cos(angleInRadians))).toFloat()
+		val startY = size.toDouble().coerceAtMost(0.0.coerceAtLeast(centerY - r * sin(angleInRadians))).toFloat()
 
-	override fun getOpacity(): Int {
-		return PixelFormat.TRANSLUCENT
+		val endX = 0.0.coerceAtLeast(size.toDouble().coerceAtMost(centerX + r * cos(angleInRadians))).toFloat()
+		val endY = size.toDouble().coerceAtMost(0.0.coerceAtLeast(centerY + r * sin(angleInRadians))).toFloat()
+
+		return LinearGradient(
+				startX,
+				startY,
+				endX,
+				endY,
+				intArrayOf(colorStart, colorEnd),
+				null,
+				Shader.TileMode.CLAMP
+		)
 	}
 
 	class Options {
@@ -234,6 +304,11 @@ class AvatarDrawable(
 
 		@ColorInt
 		var borderColor: Int = Color.BLACK
+
+		@ColorInt
+		var borderColorSecondary: Int? = null
+
+		var borderGradientAngle: Int = 0
 
 		@Dimension(unit = Dimension.PX)
 		var textSize: Float = 0f

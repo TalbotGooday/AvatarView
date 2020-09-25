@@ -24,6 +24,11 @@
 			android:id="@+id/avatarView0"
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
+			app:avBorderColor="#FF0000"
+			app:avBorderWidth="5dp"
+			app:avBorderColorSecondary="#FF9D00"
+			app:avBorderGradientAngle="135"
+			app:placeholderText="OMG"
 			android:src="@drawable/ic_round_bug_report" />
 
 		<com.goodayapps.widget.AvatarView
@@ -36,7 +41,7 @@
 			app:avBorderColor="#4D8989A8"
 			app:avBorderWidth="5dp"
 			app:avTextSizePercentage=".7"
-			app:avVolumetricType="all"
+			app:avVolumetricType="none"
 			app:iconDrawableScale=".7"
 			app:placeholderText="AV" />
 
@@ -70,28 +75,6 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_weight="1.5"
-			android:text="iconDrawableScale"
-			android:textColor="@android:color/white"
-			tools:ignore="HardcodedText" />
-
-		<SeekBar
-			android:id="@+id/iconDrawableScaleSeek"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:max="150"
-			android:progress="50" />
-	</LinearLayout>
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
-
-		<androidx.appcompat.widget.AppCompatTextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1.5"
 			android:text="size"
 			android:textColor="@android:color/white"
 			tools:ignore="HardcodedText" />
@@ -103,6 +86,28 @@
 			android:layout_weight="1"
 			android:max="150"
 			android:progress="100" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:text="iconDrawableScale"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<SeekBar
+			android:id="@+id/iconDrawableScaleSeek"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:max="150"
+			android:progress="50" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -175,14 +180,29 @@
 			android:progress="0" />
 	</LinearLayout>
 
-	<androidx.appcompat.widget.AppCompatTextView
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:ellipsize="end"
-		android:maxLines="1"
-		android:text="avVolumetricType:"
-		android:textColor="@android:color/white"
-		tools:ignore="HardcodedText" />
+		android:orientation="horizontal">
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="avBorderGradientAngle"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<SeekBar
+			android:id="@+id/avBorderGradientAngle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:max="360"
+			android:progress="0" />
+	</LinearLayout>
 
 	<View
 		android:layout_width="match_parent"
@@ -191,6 +211,15 @@
 		android:layout_marginBottom="8dp"
 		android:alpha=".1"
 		android:background="@android:color/white" />
+
+	<androidx.appcompat.widget.AppCompatTextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:ellipsize="end"
+		android:maxLines="1"
+		android:text="avVolumetricType:"
+		android:textColor="@android:color/white"
+		tools:ignore="HardcodedText" />
 
 	<RadioGroup
 		android:id="@+id/avVolumetric"

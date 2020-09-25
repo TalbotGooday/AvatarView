@@ -73,6 +73,15 @@ class MainActivity : AppCompatActivity() {
 				}
 			}
 		}
+		avBorderGradientAngle.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				applyToAvatars {
+					it.borderGradientAngle = progress
+				}
+			}
+		})
+
+
 	}
 
 	private inline fun applyToAvatars(action: (AvatarView) -> Unit) {
