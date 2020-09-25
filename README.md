@@ -3,7 +3,8 @@
 [![](https://jitpack.io/v/TalbotGooday/AvatarView.svg)](https://jitpack.io/#TalbotGooday/AvatarView)
 [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)]()
 
-A simple AvatarView based on the AppCompatImageView
+A simple AvatarView based on the AppCompatImageView.
+Contain
 
 <img src="/screenshots/1.png" width=32%/>
 
@@ -38,6 +39,7 @@ Settle the AvatarView somewhere in your XML like this:
 	android:src="drawable"
 	app:avBackgroundColor="color|reference"
 	app:avBorderColor="color|reference"
+	app:avBorderColorSecondary="color|reference"
 	app:avBorderWidth="dimension"
 	app:avVolumetricType="none|all|drawable|placeholder"
 	app:avAvatarMargin="dimension"
