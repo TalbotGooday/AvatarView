@@ -25,8 +25,8 @@
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
 			app:avBorderColor="#FF0000"
-			app:avBorderWidth="5dp"
 			app:avBorderColorSecondary="#FF9D00"
+			app:avBorderWidth="5dp"
 			app:avBorderGradientAngle="135"
 			app:placeholderText="OMG"
 			android:src="@drawable/ic_round_bug_report" />
@@ -197,6 +197,60 @@
 
 		<SeekBar
 			android:id="@+id/avBorderGradientAngle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:max="360"
+			android:progress="0" />
+	</LinearLayout>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginBottom="8dp"
+		android:alpha=".1"
+		android:background="@android:color/white" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:text="avLabelBgWidth"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<SeekBar
+			android:id="@+id/avLabelBgWidth"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:max="15"
+			android:progress="5" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="avLabelTextAngle"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<SeekBar
+			android:id="@+id/avAngle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"

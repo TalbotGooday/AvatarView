@@ -81,6 +81,22 @@ class MainActivity : AppCompatActivity() {
 			}
 		})
 
+		avAngle.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				applyToAvatars {
+					it.labelTextAngle = progress
+				}
+			}
+		})
+
+		avLabelBgWidth.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				applyToAvatars {
+					it.labelBackgroundWidth = convertDpToPixel(progress)
+				}
+			}
+		})
+
 
 	}
 

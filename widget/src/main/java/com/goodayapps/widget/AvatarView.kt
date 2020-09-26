@@ -71,6 +71,17 @@ open class AvatarView : AppCompatImageView {
 			field = value
 			postInvalidate()
 		}
+	var labelTextAngle = 0
+		set(value) {
+			field = value
+			postInvalidate()
+		}
+	@Dimension(unit = Dimension.PX)
+	var labelBackgroundWidth = 0
+		set(value) {
+			field = value
+			postInvalidate()
+		}
 
 	constructor(context: Context) : super(context) {
 		init(context, null)
@@ -129,7 +140,9 @@ open class AvatarView : AppCompatImageView {
 			this.borderColorSecondary = this@AvatarView.borderColorSecondary
 			this.backgroundPlaceholderColor = this@AvatarView.backgroundPlaceholderColor
 			this.borderWidth = this@AvatarView.borderWidth
+			this.labelBackgroundWidth = this@AvatarView.labelBackgroundWidth
 			this.borderGradientAngle = this@AvatarView.borderGradientAngle
+			this.labelTextAngle = this@AvatarView.labelTextAngle
 			this.volumetricType = this@AvatarView.volumetricType
 			this.textTypeface = this@AvatarView.textTypeface
 			this.iconDrawableScale = this@AvatarView.iconDrawableScale

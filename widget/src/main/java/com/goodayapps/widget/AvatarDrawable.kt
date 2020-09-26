@@ -17,11 +17,13 @@ class AvatarDrawable(
 		private val size: Int,
 		private val textSize: Float,
 		private val borderWidth: Int,
+		private val labelBackgroundWidth: Int,
 		private val backgroundColor: Int = Color.BLACK,
 		private val textColor: Int = Color.WHITE,
 		private val borderColor: Int = Color.BLACK,
 		private val borderColorSecondary: Int? = null,
 		private val borderGradientAngle: Int = 0,
+		private val labelTextAngle: Int = 0,
 		private val avatarDrawable: Drawable?,
 		private val iconDrawableScale: Float = .5f,
 		private val volumetricType: VolumetricType = VolumetricType.ALL,
@@ -81,7 +83,7 @@ class AvatarDrawable(
 	private val textOverBackgroundPaint = Paint().apply {
 		this.isAntiAlias = true
 		this.style = Paint.Style.STROKE
-		this.strokeWidth = borderWidth * 2f
+		this.strokeWidth = labelBackgroundWidth * 2f
 		this.shader = getGradientShader(Color.TRANSPARENT, Color.GREEN)
 	}
 
@@ -107,11 +109,13 @@ class AvatarDrawable(
 			options.size,
 			options.textSize,
 			options.borderWidth.coerceAtMost(options.size / 2),
+			options.labelBackgroundWidth.coerceAtMost(options.size / 2),
 			options.backgroundPlaceholderColor,
 			options.textColor,
 			options.borderColor,
 			options.borderColorSecondary,
 			options.borderGradientAngle,
+			options.labelTextAngle,
 			options.avatarDrawable,
 			options.iconDrawableScale,
 			options.volumetricType,
@@ -205,7 +209,7 @@ class AvatarDrawable(
 			)
 		}
 
-		//TODO drawTextOver()
+//		drawTextOver()
 
 		canvas.drawBitmap(bufferBitmap, Matrix(), null)
 		canvas.restore()
@@ -216,13 +220,13 @@ class AvatarDrawable(
 		bufferCanvas.drawCircle(
 				circleCenter,
 				circleCenter,
-				radius,
+				radius - (labelBackgroundWidth / 2f),
 				textOverBackgroundPaint
 		)
 
 		val path = Path()
 		bufferCanvas.save()
-		bufferCanvas.rotate((borderGradientAngle + 45).toFloat(), circleCenter, circleCenter)
+		bufferCanvas.rotate((labelTextAngle).toFloat(), circleCenter, circleCenter)
 		path.addCircle(circleCenter, circleCenter, radius, Path.Direction.CCW)
 		bufferCanvas.drawTextOnPath("#OPENTOWORK", path, 0f, 0f, textOverPaint)
 		bufferCanvas.restore()
@@ -309,6 +313,7 @@ class AvatarDrawable(
 		var borderColorSecondary: Int? = null
 
 		var borderGradientAngle: Int = 0
+		var labelTextAngle: Int = 0
 
 		@Dimension(unit = Dimension.PX)
 		var textSize: Float = 0f
@@ -318,6 +323,8 @@ class AvatarDrawable(
 
 		@Dimension(unit = Dimension.PX)
 		var borderWidth: Int = 0
+		@Dimension(unit = Dimension.PX)
+		var labelBackgroundWidth: Int = 0
 		var placeholderText: CharSequence? = "?"
 		var avatarDrawable: Drawable? = null
 		var iconDrawableScale: Float = .5f
