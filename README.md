@@ -4,7 +4,6 @@
 [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)]()
 
 A simple AvatarView based on the AppCompatImageView.
-Contain
 
 <img src="/screenshots/1.png" width=32%/>
 
