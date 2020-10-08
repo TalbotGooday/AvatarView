@@ -6,6 +6,7 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import com.goodayapps.widget.AvatarDrawable
 import com.goodayapps.widget.AvatarView
+import com.goodayapps.widget.avatarDrawable
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -66,10 +67,10 @@ class MainActivity : AppCompatActivity() {
 		avVolumetric.setOnCheckedChangeListener { _, checkedId ->
 			applyToAvatars {
 				it.volumetricType = when (checkedId) {
-					R.id.avVolumetricAll -> AvatarDrawable.VolumetricType.ALL
-					R.id.avVolumetricDrawable -> AvatarDrawable.VolumetricType.DRAWABLE
-					R.id.avVolumetricPlaceholder -> AvatarDrawable.VolumetricType.PLACEHOLDER
-					else -> AvatarDrawable.VolumetricType.NONE
+					R.id.avVolumetricAll -> AvatarDrawable.Volumetric.ALL
+					R.id.avVolumetricDrawable -> AvatarDrawable.Volumetric.DRAWABLE
+					R.id.avVolumetricPlaceholder -> AvatarDrawable.Volumetric.PLACEHOLDER
+					else -> AvatarDrawable.Volumetric.NONE
 				}
 			}
 		}
@@ -81,23 +82,28 @@ class MainActivity : AppCompatActivity() {
 			}
 		})
 
-		avAngle.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
+		archesDegreeArea.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
 			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 				applyToAvatars {
-					it.labelTextAngle = progress
+					it.archesDegreeArea = progress
 				}
 			}
 		})
 
-		avLabelBgWidth.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
+		archesCount.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
 			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 				applyToAvatars {
-					it.labelBackgroundWidth = convertDpToPixel(progress)
+					it.archesCount = progress
 				}
 			}
 		})
-
-
+		archesAngle.setOnSeekBarChangeListener(object : OnSeekBarChangeListener() {
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				applyToAvatars {
+					it.archesAngle = progress
+				}
+			}
+		})
 	}
 
 	private inline fun applyToAvatars(action: (AvatarView) -> Unit) {

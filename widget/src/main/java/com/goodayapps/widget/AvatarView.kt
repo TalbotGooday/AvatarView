@@ -9,6 +9,7 @@ import android.os.Build
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
+import androidx.annotation.IntRange
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
 import com.goodayapps.widget.utils.colorAttribute
@@ -32,10 +33,10 @@ open class AvatarView : AppCompatImageView {
 
 	@ColorInt
 	var textColor: Int = Color.WHITE
+	var textSize: Float = -1f
 
 	@ColorInt
 	var backgroundPlaceholderColor: Int = Color.BLACK
-	var textSize: Float = -1f
 	var placeholderText: CharSequence? = "?"
 	var iconDrawableScale: Float = .5f
 		set(value) {
@@ -55,29 +56,44 @@ open class AvatarView : AppCompatImageView {
 			postInvalidate()
 		}
 
+	var textOverSizePercentage: Float = DEFAULT_TEXT_SIZE_PERCENTAGE
+		set(value) {
+			field = value
+			postInvalidate()
+		}
+
 	@Dimension(unit = Dimension.PX)
 	var avatarMargin: Int = 0
 		set(value) {
 			field = value
 			postInvalidate()
 		}
-	var volumetricType: AvatarDrawable.VolumetricType = AvatarDrawable.VolumetricType.ALL
+	var volumetricType: AvatarDrawable.Volumetric = AvatarDrawable.Volumetric.ALL
 		set(value) {
 			field = value
 			postInvalidate()
 		}
+
+	@IntRange(from = 0, to = 360)
 	var borderGradientAngle = 0
 		set(value) {
 			field = value
 			postInvalidate()
 		}
-	var labelTextAngle = 0
+
+	@IntRange(from = 0, to = 360)
+	var archesDegreeArea = 0
 		set(value) {
 			field = value
 			postInvalidate()
 		}
-	@Dimension(unit = Dimension.PX)
-	var labelBackgroundWidth = 0
+	@IntRange(from = 0, to = 360)
+	var archesAngle = 0
+		set(value) {
+			field = value
+			postInvalidate()
+		}
+	var archesCount = 0
 		set(value) {
 			field = value
 			postInvalidate()
@@ -125,29 +141,58 @@ open class AvatarView : AppCompatImageView {
 
 		val size = measuredWidth.coerceAtMost(measuredHeight).coerceAtLeast(context.convertDpToPixel(10))
 
-		val newDrawable = AvatarDrawable(AvatarDrawable.Options().apply {
-			this.avatarDrawable = drawable
-			this.placeholderText = this@AvatarView.placeholderText
-			this.size = size
-			this.textColor = this@AvatarView.textColor
-			val textSizeFin = if (this@AvatarView.textSize <= 0f) {
-				size / 3f
-			} else {
-				this@AvatarView.textSize
+		val newDrawable = avatarDrawable {
+			drawable(drawable)
+			size(size)
+			backgroundColor(backgroundPlaceholderColor)
+			volumetric(this@AvatarView.volumetricType)
+			iconDrawableScale(this@AvatarView.iconDrawableScale)
+			avatarMargin(this@AvatarView.avatarMargin)
+
+			border {
+				width(borderWidth)
+				color(borderColor)
+				colorSecondary(borderColorSecondary)
+				gradientAngle(borderGradientAngle)
+				archesCount(this@AvatarView.archesCount)
+				archesDegreeArea(this@AvatarView.archesDegreeArea)
+				archesAngle(this@AvatarView.archesAngle)
 			}
-			this.textSize = textSizeFin * textSizePercentage
-			this.borderColor = this@AvatarView.borderColor
-			this.borderColorSecondary = this@AvatarView.borderColorSecondary
-			this.backgroundPlaceholderColor = this@AvatarView.backgroundPlaceholderColor
-			this.borderWidth = this@AvatarView.borderWidth
-			this.labelBackgroundWidth = this@AvatarView.labelBackgroundWidth
-			this.borderGradientAngle = this@AvatarView.borderGradientAngle
-			this.labelTextAngle = this@AvatarView.labelTextAngle
-			this.volumetricType = this@AvatarView.volumetricType
-			this.textTypeface = this@AvatarView.textTypeface
-			this.iconDrawableScale = this@AvatarView.iconDrawableScale
-			this.avatarMargin = this@AvatarView.avatarMargin
-		})
+
+			placeholder {
+				text(placeholderText)
+				color(textColor)
+				size((if (textSize <= 0f) size / 3f else textSize) * textSizePercentage)
+				typeface(textTypeface)
+
+			}
+			avatarDrawable {
+				drawable(drawable)
+				size(size)
+				backgroundColor(backgroundPlaceholderColor)
+				volumetric(this@AvatarView.volumetricType)
+				iconDrawableScale(this@AvatarView.iconDrawableScale)
+				avatarMargin(this@AvatarView.avatarMargin)
+
+				border {
+					width(borderWidth)
+					color(borderColor)
+					colorSecondary(borderColorSecondary)
+					gradientAngle(borderGradientAngle)
+					archesCount(this@AvatarView.archesCount)
+					archesDegreeArea(this@AvatarView.archesDegreeArea)
+					archesAngle(this@AvatarView.archesAngle)
+				}
+
+				placeholder {
+					text(placeholderText)
+					color(textColor)
+					size((if (textSize <= 0f) size / 3f else textSize) * textSizePercentage)
+					typeface(textTypeface)
+
+				}
+			}
+		}
 
 		canvas?.let { newDrawable.draw(it) }
 	}
@@ -158,12 +203,15 @@ open class AvatarView : AppCompatImageView {
 		borderColor = typedArray.getColor(R.styleable.AvatarView_avBorderColor, colorAccent)
 		borderColorSecondary = typedArray.getColorOrNull(R.styleable.AvatarView_avBorderColorSecondary)
 		borderWidth = typedArray.getDimensionPixelSize(R.styleable.AvatarView_avBorderWidth, borderWidth)
-		borderGradientAngle = typedArray.getInt(R.styleable.AvatarView_avBorderGradientAngle, borderGradientAngle)
+		borderGradientAngle = typedArray.getInt(R.styleable.AvatarView_avBorderGradientAngle, borderGradientAngle).coerceIn(0, 360)
 		textSizePercentage = typedArray.getFloat(R.styleable.AvatarView_avTextSizePercentage, DEFAULT_TEXT_SIZE_PERCENTAGE)
-		volumetricType = AvatarDrawable.VolumetricType.from(typedArray.getInt(R.styleable.AvatarView_avVolumetricType, -1))
+		volumetricType = AvatarDrawable.Volumetric.from(typedArray.getInt(R.styleable.AvatarView_avVolumetricType, -1))
 		placeholderText = typedArray.getText(R.styleable.AvatarView_placeholderText)
 		iconDrawableScale = typedArray.getFloat(R.styleable.AvatarView_iconDrawableScale, iconDrawableScale)
 		avatarMargin = typedArray.getDimensionPixelSize(R.styleable.AvatarView_avAvatarMargin, avatarMargin)
+		archesDegreeArea = typedArray.getInt(R.styleable.AvatarView_avArchesDegreeArea, archesDegreeArea).coerceIn(0, 360)
+		archesAngle = typedArray.getInt(R.styleable.AvatarView_avArchesAngle, archesAngle).coerceIn(0, 360)
+		archesCount = typedArray.getInt(R.styleable.AvatarView_avArchesCount, archesCount).coerceAtLeast(0)
 
 		textTypeface = typedArray.getTypefaceOrNull(context, R.styleable.AvatarView_android_fontFamily)
 

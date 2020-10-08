@@ -9,49 +9,32 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
-import kotlin.math.cos
-import kotlin.math.sin
+import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
+import com.goodayapps.widget.utils.getGradientShader
 
-class AvatarDrawable(
-		placeholderText: CharSequence?,
+@AvatarDrawableDsl
+class AvatarDrawable private constructor(
 		private val size: Int,
-		private val textSize: Float,
-		private val borderWidth: Int,
-		private val labelBackgroundWidth: Int,
 		private val backgroundColor: Int = Color.BLACK,
-		private val textColor: Int = Color.WHITE,
-		private val borderColor: Int = Color.BLACK,
-		private val borderColorSecondary: Int? = null,
-		private val borderGradientAngle: Int = 0,
-		private val labelTextAngle: Int = 0,
 		private val avatarDrawable: Drawable?,
 		private val iconDrawableScale: Float = .5f,
-		private val volumetricType: VolumetricType = VolumetricType.ALL,
-		private val textTypeface: Typeface? = null,
+		private val volumetricType: Volumetric = Volumetric.ALL,
 		private val avatarMargin: Int = 0,
+		private val border: Border,
+		private val placeholder: Placeholder,
 ) : Drawable() {
 	private var textLayout: StaticLayout? = null
 
 	private var placeholderPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-		this.textSize = this@AvatarDrawable.textSize
-		this.color = textColor
+		this.textSize = placeholder.textSize
+		this.color = placeholder.textColor
 
-		if (textTypeface != null) {
-			this.typeface = textTypeface
+		if (placeholder.typeface != null) {
+			this.typeface = placeholder.typeface
 		}
+
 		this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
-	}
-
-	private var textOverPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-		this.textSize = this@AvatarDrawable.textSize
-		this.color = textColor
-
-		if (textTypeface != null) {
-			this.typeface = textTypeface
-		}
-		this.style = Paint.Style.FILL
-
-		this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
 	}
 
 	private var avatarBackgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -76,15 +59,14 @@ class AvatarDrawable(
 	private val borderPaint = Paint().apply {
 		this.isAntiAlias = true
 		this.style = Paint.Style.STROKE
-		this.strokeWidth = borderWidth.toFloat()
-		this.shader = getGradientShader(borderColor, borderColorSecondary ?: borderColor)
-	}
-
-	private val textOverBackgroundPaint = Paint().apply {
-		this.isAntiAlias = true
-		this.style = Paint.Style.STROKE
-		this.strokeWidth = labelBackgroundWidth * 2f
-		this.shader = getGradientShader(Color.TRANSPARENT, Color.GREEN)
+		this.strokeCap = Paint.Cap.ROUND
+		this.strokeWidth = border.width.toFloat()
+		this.shader = getGradientShader(
+				colorStart = border.color,
+				colorEnd = border.colorSecondary,
+				gradientAngle = border.gradientAngle.toDouble(),
+				size = size
+		)
 	}
 
 	private val clipPaint = Paint().apply {
@@ -103,32 +85,26 @@ class AvatarDrawable(
 	private var circleRadius = 0f
 	private var circleCenter = 0f
 	private var backgroundCircleRadius = 0f
+	private val arcBorderRect = RectF()
+	private val borderRect = RectF()
 
-	constructor(options: Options) : this(
-			options.placeholderText,
-			options.size,
-			options.textSize,
-			options.borderWidth.coerceAtMost(options.size / 2),
-			options.labelBackgroundWidth.coerceAtMost(options.size / 2),
-			options.backgroundPlaceholderColor,
-			options.textColor,
-			options.borderColor,
-			options.borderColorSecondary,
-			options.borderGradientAngle,
-			options.labelTextAngle,
-			options.avatarDrawable,
-			options.iconDrawableScale,
-			options.volumetricType,
-			options.textTypeface,
-			options.avatarMargin.coerceAtMost(options.size / 2)
+	constructor(builder: Builder) : this(
+			size = builder.size,
+			backgroundColor = builder.backgroundColor,
+			avatarDrawable = builder.avatarDrawable,
+			iconDrawableScale = builder.iconDrawableScale,
+			volumetricType = builder.volumetricType,
+			avatarMargin = builder.avatarMargin.coerceAtMost(builder.size / 2),
+			border = builder.border,
+			placeholder = builder.placeholder
 	)
 
 	init {
 		circleRadius = (size / 2.0f)
 		circleCenter = circleRadius
-		backgroundCircleRadius = circleRadius - avatarMargin - (borderWidth * .90f)
+		backgroundCircleRadius = circleRadius - avatarMargin - (border.width * .90f)
 
-		textLayout = placeholderText?.let {
+		textLayout = placeholder.text?.let {
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 				StaticLayout.Builder.obtain(it, 0, it.length, placeholderPaint, size)
 						.setAlignment(Layout.Alignment.ALIGN_CENTER)
@@ -153,7 +129,27 @@ class AvatarDrawable(
 				textHeight = it.getLineBottom(it.lineCount - 1).toFloat()
 			}
 		}
+
+		borderRect.set(calculateBounds())
+		arcBorderRect.apply {
+			set(borderRect)
+			inset(border.width / 2f, border.width / 2f)
+		}
 	}
+
+	private fun calculateBounds(): RectF {
+		val availableWidth = size
+		val availableHeight = size
+
+		val sideLength = availableWidth.coerceAtMost(availableHeight)
+
+		val left = (availableWidth - sideLength) / 2f
+		val top = (availableHeight - sideLength) / 2f
+
+		return RectF(left, top, left + sideLength, top + sideLength)
+	}
+
+	private var iconColorFilter: ColorFilter? = null
 
 	override fun draw(canvas: Canvas) {
 		canvas.save()
@@ -175,6 +171,8 @@ class AvatarDrawable(
 				if (width > 0 && height > 0) {
 					Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also {
 						avatarDrawable.setBounds(0, 0, width, height)
+
+						iconColorFilter?.let { filter -> avatarDrawable.colorFilter = filter }
 
 						avatarDrawable.draw(Canvas(it))
 					}
@@ -200,44 +198,73 @@ class AvatarDrawable(
 		drawVolume(avatarBitmap != null)
 
 		//Draw Border
-		if (borderWidth > 0) {
-			bufferCanvas.drawCircle(
-					circleCenter,
-					circleCenter,
-					circleRadius - (borderWidth / 2f),
-					borderPaint
-			)
-		}
-
-//		drawTextOver()
+		drawBorder()
 
 		canvas.drawBitmap(bufferBitmap, Matrix(), null)
 		canvas.restore()
 	}
 
-	private fun drawTextOver() {
-		val radius = circleRadius - borderWidth
+	private val totalArchesDegreeArea
+		get() = border.archesDegreeArea.toFloat()
+
+	private val animationLoopDegrees
+		get() = border.archesAngle.toFloat()
+
+	private var animationArchesSparseness = 1f
+
+	private val individualArcDegreeLength
+		get() = totalArchesDegreeArea / ((border.archesCount * 2) + 1)
+
+	private val spaceBetweenArches
+		get() = calculateSpaceBetweenArches()
+
+	private val currentAnimationArchesArea
+		get() = animationArchesSparseness * totalArchesDegreeArea
+
+	private fun drawBorder() {
+		if (border.width > 0) {
+			if (border.archesCount > 1 && totalArchesDegreeArea > 0f) {
+				drawArcBorder()
+			} else {
+				drawCircleBorder()
+			}
+		}
+	}
+
+	private fun drawArcBorder() {
+		val totalDegrees = ((270f + animationLoopDegrees) % 360)
+		val startSpace = if (totalArchesDegreeArea == 360f) 0f else individualArcDegreeLength
+		drawArches(totalDegrees + startSpace, bufferCanvas)
+		val startOfMainArch = totalDegrees + currentAnimationArchesArea
+		bufferCanvas.drawArc(arcBorderRect, startOfMainArch, 360f - currentAnimationArchesArea, false, borderPaint)
+	}
+
+	private fun drawCircleBorder() {
 		bufferCanvas.drawCircle(
 				circleCenter,
 				circleCenter,
-				radius - (labelBackgroundWidth / 2f),
-				textOverBackgroundPaint
+				circleRadius - (border.width / 2f),
+				borderPaint
 		)
+	}
 
-		val path = Path()
-		bufferCanvas.save()
-		bufferCanvas.rotate((labelTextAngle).toFloat(), circleCenter, circleCenter)
-		path.addCircle(circleCenter, circleCenter, radius, Path.Direction.CCW)
-		bufferCanvas.drawTextOnPath("#OPENTOWORK", path, 0f, 0f, textOverPaint)
-		bufferCanvas.restore()
+	private fun drawArches(totalDegrees: Float, canvas: Canvas) {
+		for (i in 0 until border.archesCount) {
+			val arcDeg = (individualArcDegreeLength + spaceBetweenArches) * i
+			val deg = totalDegrees + arcDeg// * animationArchesSparseness
+			canvas.drawArc(arcBorderRect, deg, individualArcDegreeLength, false, borderPaint)
+		}
 	}
 
 	override fun setAlpha(alpha: Int) {
 	}
 
 	override fun setColorFilter(colorFilter: ColorFilter?) {
-
+		iconColorFilter = colorFilter
+		invalidateSelf()
 	}
+
+	override fun getColorFilter(): ColorFilter? = iconColorFilter
 
 	override fun getOpacity(): Int {
 		return PixelFormat.TRANSLUCENT
@@ -267,75 +294,178 @@ class AvatarDrawable(
 	}
 
 	private fun drawVolume(isDrawable: Boolean) {
-		if (volumetricType == VolumetricType.NONE) return
-		if (volumetricType == VolumetricType.DRAWABLE && isDrawable.not()) return
-		if (volumetricType == VolumetricType.PLACEHOLDER && isDrawable) return
+		if (volumetricType == Volumetric.NONE) return
+		if (volumetricType == Volumetric.DRAWABLE && isDrawable.not()) return
+		if (volumetricType == Volumetric.PLACEHOLDER && isDrawable) return
 
 		bufferCanvas.drawCircle(circleCenter, circleCenter, backgroundCircleRadius, gradientPaint)
 	}
 
-	private fun getGradientShader(@ColorInt colorStart: Int, @ColorInt colorEnd: Int): LinearGradient {
-		val angleInRadians = Math.toRadians(borderGradientAngle.toDouble())
-		val length = size
+	private fun calculateSpaceBetweenArches() =
+			(totalArchesDegreeArea - (border.archesCount * individualArcDegreeLength)) /
+					(border.archesCount + if (totalArchesDegreeArea == 360f) 0 else 1)
 
-		val r = size / 2f
-		val centerX: Float = length / 2f
-		val centerY: Float = length / 2f
-
-		val startX = 0.0.coerceAtLeast(size.toDouble().coerceAtMost(centerX - r * cos(angleInRadians))).toFloat()
-		val startY = size.toDouble().coerceAtMost(0.0.coerceAtLeast(centerY - r * sin(angleInRadians))).toFloat()
-
-		val endX = 0.0.coerceAtLeast(size.toDouble().coerceAtMost(centerX + r * cos(angleInRadians))).toFloat()
-		val endY = size.toDouble().coerceAtMost(0.0.coerceAtLeast(centerY + r * sin(angleInRadians))).toFloat()
-
-		return LinearGradient(
-				startX,
-				startY,
-				endX,
-				endY,
-				intArrayOf(colorStart, colorEnd),
-				null,
-				Shader.TileMode.CLAMP
-		)
-	}
-
-	class Options {
-		@ColorInt
-		var textColor: Int = Color.WHITE
-
-		@ColorInt
-		var backgroundPlaceholderColor: Int = Color.BLACK
-
-		@ColorInt
-		var borderColor: Int = Color.BLACK
-
-		@ColorInt
-		var borderColorSecondary: Int? = null
-
-		var borderGradientAngle: Int = 0
-		var labelTextAngle: Int = 0
-
-		@Dimension(unit = Dimension.PX)
-		var textSize: Float = 0f
-
+	@AvatarDrawableDsl
+	class Builder {
 		@Dimension(unit = Dimension.PX)
 		var size: Int = 0
-
-		@Dimension(unit = Dimension.PX)
-		var borderWidth: Int = 0
-		@Dimension(unit = Dimension.PX)
-		var labelBackgroundWidth: Int = 0
-		var placeholderText: CharSequence? = "?"
-		var avatarDrawable: Drawable? = null
-		var iconDrawableScale: Float = .5f
-		var volumetricType: VolumetricType = VolumetricType.ALL
-		var textTypeface: Typeface? = null
+			private set
 
 		@Dimension(unit = Dimension.PX)
 		var avatarMargin: Int = 0
+			private set
+
+		@ColorInt
+		var backgroundColor: Int = Color.parseColor("#4D4D7F")
+			private set
+		var avatarDrawable: Drawable? = null
+			private set
+		var iconDrawableScale: Float = .5f
+			private set
+		var volumetricType: Volumetric = Volumetric.ALL
+			private set
+		var border = Border()
+		var placeholder = Placeholder()
+
+		fun drawable(drawable: Drawable?) = apply { this.avatarDrawable = drawable }
+
+		fun iconDrawableScale(@FloatRange(from = 0.0) scale: Float) = apply { this.iconDrawableScale = scale }
+
+		fun size(@Dimension(unit = Dimension.PX) size: Int) = apply { this.size = size }
+
+		fun avatarMargin(@Dimension(unit = Dimension.PX) margin: Int) = apply { this.avatarMargin = margin }
+
+		fun volumetric(type: Volumetric) = apply { this.volumetricType = type }
+
+		fun backgroundColor(@ColorInt color: Int?) = apply {
+			this.backgroundColor = color ?: backgroundColor
+		}
+
+		inline fun border(body: Border.Builder.() -> Unit) = apply {
+			border = Border.Builder().apply(body).build()
+		}
+
+		inline fun placeholder(body: Placeholder.Builder.() -> Unit) = apply {
+			placeholder = Placeholder.Builder().apply(body).build()
+		}
+
+		fun build() = AvatarDrawable(this)
 	}
 
-	enum class VolumetricType(val value: Int) {
+	@AvatarDrawableDsl
+	class Border(
+			@Dimension(unit = Dimension.PX) val width: Int = 0,
+			@ColorInt val color: Int = Color.parseColor("#4D8989A8"),
+			@ColorInt val colorSecondary: Int = color,
+			val gradientAngle: Int = 0,
+			val archesCount: Int = 0,
+			val archesDegreeArea: Int = 0,
+			val archesAngle: Int = 0,
+	) {
+		@AvatarDrawableDsl
+		class Builder {
+			@Dimension(unit = Dimension.PX)
+			var width: Int = 0
+				private set
+
+			@ColorInt
+			var color: Int = Color.parseColor("#4D8989A8")
+				private set
+
+			@ColorInt
+			var colorSecondary: Int? = null
+				private set
+
+			var gradientAngle: Int = 0
+				private set
+
+			var archesCount: Int = 0
+				private set
+
+			var archesDegreeArea: Int = 0
+				private set
+
+			var archesAngle: Int = 0
+				private set
+
+			fun color(@ColorInt color: Int?) = apply { this.color = color ?: this.color }
+
+			fun colorSecondary(@ColorInt color: Int?) = apply {
+				this.colorSecondary = color ?: this.color
+			}
+
+			fun archesCount(count: Int) = apply {
+				this.archesCount = count
+			}
+
+			fun archesDegreeArea(@IntRange(from = 0, to = 360) angle: Int) = apply {
+				this.archesDegreeArea = angle
+			}
+
+			fun archesAngle(@IntRange(from = 0, to = 360) angle: Int) = apply {
+				this.archesAngle = angle
+			}
+
+			fun width(@Dimension(unit = Dimension.PX) width: Int?) = apply {
+				this.width = width ?: 0
+			}
+
+			fun gradientAngle(@IntRange(from = 0, to = 360) angle: Int) = apply {
+				this.gradientAngle = angle
+			}
+
+			fun build() = Border(
+					width = width,
+					color = color,
+					colorSecondary = colorSecondary ?: color,
+					gradientAngle = gradientAngle,
+					archesCount = archesCount,
+					archesDegreeArea = archesDegreeArea,
+					archesAngle = archesAngle
+			)
+		}
+	}
+
+	@AvatarDrawableDsl
+	class Placeholder(
+			var text: CharSequence? = "?",
+			@ColorInt
+			var textColor: Int = Color.WHITE,
+			@Dimension(unit = Dimension.PX)
+			var textSize: Float = 0f,
+			var typeface: Typeface? = null,
+	) {
+		@AvatarDrawableDsl
+		class Builder {
+			var text: CharSequence? = "?"
+				private set
+
+			@ColorInt
+			var color: Int = Color.WHITE
+				private set
+
+			@Dimension(unit = Dimension.PX)
+			var size: Float = 0f
+				private set
+
+			var typeface: Typeface? = null
+				private set
+
+			fun text(text: CharSequence?) = apply { this.text = text ?: "?" }
+
+			fun color(@ColorInt color: Int?) = apply { this.color = color ?: this.color }
+
+			fun size(@Dimension(unit = Dimension.PX) size: Float?) = apply {
+				this.size = size ?: 0f
+			}
+
+			fun typeface(typeface: Typeface?) = apply { this.typeface = typeface }
+
+			fun build() = Placeholder(text, color, size, typeface)
+		}
+	}
+
+	enum class Volumetric(val value: Int) {
 		NONE(-1),
 		ALL(0),
 		DRAWABLE(1),

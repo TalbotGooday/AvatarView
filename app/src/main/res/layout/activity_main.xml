@@ -24,18 +24,22 @@
 			android:id="@+id/avatarView0"
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
+			android:src="@drawable/ic_round_bug_report"
+			android:visibility="gone"
 			app:avBorderColor="#FF0000"
 			app:avBorderColorSecondary="#FF9D00"
-			app:avBorderWidth="5dp"
 			app:avBorderGradientAngle="135"
-			app:placeholderText="OMG"
-			android:src="@drawable/ic_round_bug_report" />
+			app:avBorderWidth="5dp"
+			app:placeholderText="OMG" />
 
 		<com.goodayapps.widget.AvatarView
 			android:id="@+id/avatarView1"
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
 			android:src="@drawable/ic_launcher_foreground"
+			app:avArchesAngle="0"
+			app:avArchesCount="4"
+			app:avArchesDegreeArea="90"
 			app:avAvatarMargin="5dp"
 			app:avBackgroundColor="@color/colorPrimary"
 			app:avBorderColor="#4D8989A8"
@@ -50,6 +54,7 @@
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
 			android:src="@drawable/avatar1"
+			android:visibility="gone"
 			app:avBackgroundColor="@color/colorPrimary"
 			app:avBorderColor="@color/colorAccent"
 			app:avBorderWidth="5dp" />
@@ -59,6 +64,7 @@
 			android:layout_width="@dimen/avatar_size"
 			android:layout_height="@dimen/avatar_size"
 			android:fontFamily="@font/font_19849"
+			android:visibility="gone"
 			app:avBackgroundColor="@color/colorPrimary"
 			app:avBorderColor="@color/colorAccent"
 			app:avBorderWidth="5dp"
@@ -221,17 +227,17 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_weight="1.5"
-			android:text="avLabelBgWidth"
+			android:text="archesCount"
 			android:textColor="@android:color/white"
 			tools:ignore="HardcodedText" />
 
 		<SeekBar
-			android:id="@+id/avLabelBgWidth"
+			android:id="@+id/archesCount"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:max="15"
-			android:progress="5" />
+			android:progress="0" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -245,12 +251,36 @@
 			android:layout_weight="1.5"
 			android:ellipsize="end"
 			android:maxLines="1"
-			android:text="avLabelTextAngle"
+			android:text="archesDegreeArea"
 			android:textColor="@android:color/white"
 			tools:ignore="HardcodedText" />
 
 		<SeekBar
-			android:id="@+id/avAngle"
+			android:id="@+id/archesDegreeArea"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:max="360"
+			android:progress="0" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<androidx.appcompat.widget.AppCompatTextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="archesAngle"
+			android:textColor="@android:color/white"
+			tools:ignore="HardcodedText" />
+
+		<SeekBar
+			android:id="@+id/archesAngle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"

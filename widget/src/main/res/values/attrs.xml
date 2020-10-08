@@ -14,6 +14,9 @@
 			<enum name="placeholder" value="2"/>
 		</attr>
 		<attr name="avAvatarMargin" format="dimension"/>
+		<attr name="avArchesDegreeArea" format="integer"/>
+		<attr name="avArchesAngle" format="integer"/>
+		<attr name="avArchesCount" format="integer"/>
 		<attr name="android:fontFamily" />
 		<attr name="iconDrawableScale" format="float"/>
 		<attr name="placeholderText" format="string"/>
