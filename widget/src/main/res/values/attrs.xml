@@ -17,6 +17,10 @@
 		<attr name="avArchesDegreeArea" format="integer"/>
 		<attr name="avArchesAngle" format="integer"/>
 		<attr name="avArchesCount" format="integer"/>
+		<attr name="avArchesType" format="enum">
+			<enum name="single" value="0"/>
+			<enum name="mirror" value="1"/>
+		</attr>
 		<attr name="android:fontFamily" />
 		<attr name="iconDrawableScale" format="float"/>
 		<attr name="placeholderText" format="string"/>

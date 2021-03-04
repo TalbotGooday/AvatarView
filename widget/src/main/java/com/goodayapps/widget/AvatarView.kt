@@ -87,6 +87,7 @@ open class AvatarView : AppCompatImageView {
 			field = value
 			postInvalidate()
 		}
+
 	@IntRange(from = 0, to = 360)
 	var archesAngle = 0
 		set(value) {
@@ -94,6 +95,11 @@ open class AvatarView : AppCompatImageView {
 			postInvalidate()
 		}
 	var archesCount = 0
+		set(value) {
+			field = value
+			postInvalidate()
+		}
+	var archesType = AvatarDrawable.Border.ARCH_TYPE_DEFAULT
 		set(value) {
 			field = value
 			postInvalidate()
@@ -157,6 +163,7 @@ open class AvatarView : AppCompatImageView {
 				archesCount(this@AvatarView.archesCount)
 				archesDegreeArea(this@AvatarView.archesDegreeArea)
 				archesAngle(this@AvatarView.archesAngle)
+				archesType(this@AvatarView.archesType)
 			}
 
 			placeholder {
@@ -164,33 +171,6 @@ open class AvatarView : AppCompatImageView {
 				color(textColor)
 				size((if (textSize <= 0f) size / 3f else textSize) * textSizePercentage)
 				typeface(textTypeface)
-
-			}
-			avatarDrawable {
-				drawable(drawable)
-				size(size)
-				backgroundColor(backgroundPlaceholderColor)
-				volumetric(this@AvatarView.volumetricType)
-				iconDrawableScale(this@AvatarView.iconDrawableScale)
-				avatarMargin(this@AvatarView.avatarMargin)
-
-				border {
-					width(borderWidth)
-					color(borderColor)
-					colorSecondary(borderColorSecondary)
-					gradientAngle(borderGradientAngle)
-					archesCount(this@AvatarView.archesCount)
-					archesDegreeArea(this@AvatarView.archesDegreeArea)
-					archesAngle(this@AvatarView.archesAngle)
-				}
-
-				placeholder {
-					text(placeholderText)
-					color(textColor)
-					size((if (textSize <= 0f) size / 3f else textSize) * textSizePercentage)
-					typeface(textTypeface)
-
-				}
 			}
 		}
 
@@ -212,6 +192,7 @@ open class AvatarView : AppCompatImageView {
 		archesDegreeArea = typedArray.getInt(R.styleable.AvatarView_avArchesDegreeArea, archesDegreeArea).coerceIn(0, 360)
 		archesAngle = typedArray.getInt(R.styleable.AvatarView_avArchesAngle, archesAngle).coerceIn(0, 360)
 		archesCount = typedArray.getInt(R.styleable.AvatarView_avArchesCount, archesCount).coerceAtLeast(0)
+		archesType = typedArray.getInt(R.styleable.AvatarView_avArchesType, archesType)
 
 		textTypeface = typedArray.getTypefaceOrNull(context, R.styleable.AvatarView_android_fontFamily)
 

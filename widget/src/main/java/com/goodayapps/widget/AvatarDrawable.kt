@@ -213,7 +213,8 @@ class AvatarDrawable private constructor(
 	private var animationArchesSparseness = 1f
 
 	private val individualArcDegreeLength
-		get() = totalArchesDegreeArea / ((border.archesCount * 2) + 1)
+		get() = calculateArcDegreeLength()
+
 
 	private val spaceBetweenArches
 		get() = calculateSpaceBetweenArches()
@@ -223,7 +224,9 @@ class AvatarDrawable private constructor(
 
 	private fun drawBorder() {
 		if (border.width > 0) {
-			if (border.archesCount > 1 && totalArchesDegreeArea > 0f) {
+			if (((border.archesType == Border.ARCH_TYPE_DEFAULT && border.archesCount > 1)
+							|| border.archesType == Border.ARCH_TYPE_MIRROR && border.archesCount > 0)
+					&& totalArchesDegreeArea > 0f) {
 				drawArcBorder()
 			} else {
 				drawCircleBorder()
@@ -232,11 +235,21 @@ class AvatarDrawable private constructor(
 	}
 
 	private fun drawArcBorder() {
-		val totalDegrees = ((270f + animationLoopDegrees) % 360)
-		val startSpace = if (totalArchesDegreeArea == 360f) 0f else individualArcDegreeLength
-		drawArches(totalDegrees + startSpace, bufferCanvas)
-		val startOfMainArch = totalDegrees + currentAnimationArchesArea
-		bufferCanvas.drawArc(arcBorderRect, startOfMainArch, 360f - currentAnimationArchesArea, false, borderPaint)
+		val path = Path()
+
+		var totalDegrees = ((270f + animationLoopDegrees) % 360)
+		val startSpace = if (totalArchesDegreeArea == 360f || border.archesType == Border.ARCH_TYPE_MIRROR) 0f else individualArcDegreeLength
+		drawArches(path, totalDegrees + startSpace)
+
+		if (border.archesType == Border.ARCH_TYPE_MIRROR) {
+			totalDegrees = ((270f + (animationLoopDegrees + 180)) % 360)
+			drawArches(path, totalDegrees + startSpace)
+		} else {
+			val startOfMainArch = totalDegrees + currentAnimationArchesArea
+			path.addArc(arcBorderRect, startOfMainArch, 360f - currentAnimationArchesArea)
+		}
+
+		bufferCanvas.drawPath(path, borderPaint)
 	}
 
 	private fun drawCircleBorder() {
@@ -248,11 +261,11 @@ class AvatarDrawable private constructor(
 		)
 	}
 
-	private fun drawArches(totalDegrees: Float, canvas: Canvas) {
+	private fun drawArches(path: Path, totalDegrees: Float) {
 		for (i in 0 until border.archesCount) {
 			val arcDeg = (individualArcDegreeLength + spaceBetweenArches) * i
 			val deg = totalDegrees + arcDeg// * animationArchesSparseness
-			canvas.drawArc(arcBorderRect, deg, individualArcDegreeLength, false, borderPaint)
+			path.addArc(arcBorderRect, deg, individualArcDegreeLength)
 		}
 	}
 
@@ -304,6 +317,12 @@ class AvatarDrawable private constructor(
 	private fun calculateSpaceBetweenArches() =
 			(totalArchesDegreeArea - (border.archesCount * individualArcDegreeLength)) /
 					(border.archesCount + if (totalArchesDegreeArea == 360f) 0 else 1)
+
+	private fun calculateArcDegreeLength() = totalArchesDegreeArea / (if (border.archesType == Border.ARCH_TYPE_DEFAULT) {
+		(border.archesCount * 2) + 1
+	} else {
+		border.archesCount
+	})
 
 	@AvatarDrawableDsl
 	class Builder {
@@ -361,7 +380,13 @@ class AvatarDrawable private constructor(
 			val archesCount: Int = 0,
 			val archesDegreeArea: Int = 0,
 			val archesAngle: Int = 0,
+			val archesType: Int = ARCH_TYPE_DEFAULT,
 	) {
+		companion object {
+			const val ARCH_TYPE_DEFAULT = 0
+			const val ARCH_TYPE_MIRROR = 1
+		}
+
 		@AvatarDrawableDsl
 		class Builder {
 			@Dimension(unit = Dimension.PX)
@@ -388,6 +413,9 @@ class AvatarDrawable private constructor(
 			var archesAngle: Int = 0
 				private set
 
+			var archesType: Int = 0
+				private set
+
 			fun color(@ColorInt color: Int?) = apply { this.color = color ?: this.color }
 
 			fun colorSecondary(@ColorInt color: Int?) = apply {
@@ -406,6 +434,10 @@ class AvatarDrawable private constructor(
 				this.archesAngle = angle
 			}
 
+			fun archesType(@IntRange(from = 0, to = 2) type: Int) = apply {
+				this.archesType = type
+			}
+
 			fun width(@Dimension(unit = Dimension.PX) width: Int?) = apply {
 				this.width = width ?: 0
 			}
@@ -421,9 +453,11 @@ class AvatarDrawable private constructor(
 					gradientAngle = gradientAngle,
 					archesCount = archesCount,
 					archesDegreeArea = archesDegreeArea,
-					archesAngle = archesAngle
+					archesAngle = archesAngle,
+					archesType = archesType,
 			)
 		}
+
 	}
 
 	@AvatarDrawableDsl
