@@ -47,6 +47,14 @@ Settle the AvatarView somewhere in your XML like this:
 	app:placeholderText="string" />
 ```
 
+## TODO
+- [ ] Animated border
+- [ ] Border progress
+- [ ] Online indicator
+- [ ] Border arches better logic
+
+
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
