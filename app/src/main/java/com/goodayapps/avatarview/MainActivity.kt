@@ -1,9 +1,12 @@
 package com.goodayapps.avatarview
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.children
 import com.goodayapps.widget.AvatarDrawable
 import com.goodayapps.widget.AvatarView
 import com.goodayapps.widget.avatarDrawable
@@ -107,7 +110,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private inline fun applyToAvatars(action: (AvatarView) -> Unit) {
-		arrayOf(avatarView0, avatarView1, avatarView2, avatarView3).forEach { action.invoke(it) }
+		avatars_list.children.mapNotNull { it as? AvatarView }.forEach { action.invoke(it) }
 	}
 
 	private fun convertDpToPixel(dp: Int): Int {
