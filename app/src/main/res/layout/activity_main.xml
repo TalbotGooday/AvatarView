@@ -35,7 +35,6 @@
             android:showDividers="middle">
 
             <com.goodayapps.widget.AvatarView
-                android:id="@+id/avatarView0"
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
@@ -48,7 +47,18 @@
                 app:placeholderText="OMG" />
 
             <com.goodayapps.widget.AvatarView
-                android:id="@+id/avatarView10"
+                style="@style/AvatarStyleHelper"
+                android:layout_width="@dimen/avatar_size"
+                android:layout_height="@dimen/avatar_size"
+                android:src="@drawable/ic_baseline_cloud_circle_24"
+                app:avBorderColor="#FF0000"
+                app:avBorderColorSecondary="#FF9D00"
+                app:avBorderGradientAngle="135"
+                app:avBorderWidth="5dp"
+                app:iconDrawableScale=".3"
+                app:placeholderText="OMG" />
+
+            <com.goodayapps.widget.AvatarView
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
@@ -61,7 +71,6 @@
                 app:placeholderText="OMG" />
 
             <com.goodayapps.widget.AvatarView
-                android:id="@+id/avatarView1"
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
@@ -80,7 +89,6 @@
                 app:placeholderText="AV" />
 
             <com.goodayapps.widget.AvatarView
-                android:id="@+id/avatarView2"
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
@@ -90,7 +98,6 @@
                 app:avBorderWidth="5dp" />
 
             <com.goodayapps.widget.AvatarView
-                android:id="@+id/avatarView3"
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"

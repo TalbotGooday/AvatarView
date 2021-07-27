@@ -380,6 +380,10 @@ class AvatarDrawable private constructor(
                     _width = intrinsicWidth / ratioOfWidth * ratio
                     _height = maxF
                 }
+                ratio == 1f ->{
+                    _width = maxF
+                    _height = maxF
+                }
                 else -> {
                     _width = 0f
                     _height = 0f
