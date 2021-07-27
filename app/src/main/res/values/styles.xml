@@ -8,4 +8,7 @@
 		<item name="fontFamily">@font/avenir_medium</item>
 	</style>
 
+	<style name="AvatarStyleHelper">
+		<item name="android:layout_margin">8dp</item>
+	</style>
 </resources>

@@ -37,6 +37,7 @@ class AvatarDrawable private constructor(
     private val border: Border,
     private val placeholder: Placeholder,
 ) : Drawable() {
+    private var iconColorFilter: ColorFilter? = null
     private var textLayout: StaticLayout? = null
 
     private var placeholderPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -101,6 +102,23 @@ class AvatarDrawable private constructor(
     private val arcBorderRect = RectF()
     private val borderRect = RectF()
 
+    private val totalArchesDegreeArea
+        get() = border.archesDegreeArea.toFloat()
+
+    private val animationLoopDegrees
+        get() = border.archesAngle.toFloat()
+
+    private var animationArchesSparseness = 1f
+
+    private val individualArcDegreeLength
+        get() = calculateArcDegreeLength()
+
+    private val spaceBetweenArches
+        get() = calculateSpaceBetweenArches()
+
+    private val currentAnimationArchesArea
+        get() = animationArchesSparseness * totalArchesDegreeArea
+
     constructor(builder: Builder) : this(
         size = builder.size,
         backgroundColor = builder.backgroundColor,
@@ -150,19 +168,19 @@ class AvatarDrawable private constructor(
         }
     }
 
-    private fun calculateBounds(): RectF {
-        val availableWidth = size
-        val availableHeight = size
-
-        val sideLength = availableWidth.coerceAtMost(availableHeight)
-
-        val left = (availableWidth - sideLength) / 2f
-        val top = (availableHeight - sideLength) / 2f
-
-        return RectF(left, top, left + sideLength, top + sideLength)
+    override fun setAlpha(alpha: Int) {
     }
 
-    private var iconColorFilter: ColorFilter? = null
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        iconColorFilter = colorFilter
+        invalidateSelf()
+    }
+
+    override fun getColorFilter(): ColorFilter? = iconColorFilter
+
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
+    }
 
     override fun draw(canvas: Canvas) {
         canvas.save()
@@ -230,22 +248,18 @@ class AvatarDrawable private constructor(
         canvas.restore()
     }
 
-    private val totalArchesDegreeArea
-        get() = border.archesDegreeArea.toFloat()
 
-    private val animationLoopDegrees
-        get() = border.archesAngle.toFloat()
+    private fun calculateBounds(): RectF {
+        val availableWidth = size
+        val availableHeight = size
 
-    private var animationArchesSparseness = 1f
+        val sideLength = availableWidth.coerceAtMost(availableHeight)
 
-    private val individualArcDegreeLength
-        get() = calculateArcDegreeLength()
+        val left = (availableWidth - sideLength) / 2f
+        val top = (availableHeight - sideLength) / 2f
 
-    private val spaceBetweenArches
-        get() = calculateSpaceBetweenArches()
-
-    private val currentAnimationArchesArea
-        get() = animationArchesSparseness * totalArchesDegreeArea
+        return RectF(left, top, left + sideLength, top + sideLength)
+    }
 
     private fun drawBorder() {
         if (border.width > 0) {
@@ -294,20 +308,6 @@ class AvatarDrawable private constructor(
             val deg = totalDegrees + arcDeg// * animationArchesSparseness
             path.addArc(arcBorderRect, deg, individualArcDegreeLength)
         }
-    }
-
-    override fun setAlpha(alpha: Int) {
-    }
-
-    override fun setColorFilter(colorFilter: ColorFilter?) {
-        iconColorFilter = colorFilter
-        invalidateSelf()
-    }
-
-    override fun getColorFilter(): ColorFilter? = iconColorFilter
-
-    override fun getOpacity(): Int {
-        return PixelFormat.TRANSLUCENT
     }
 
     private fun drawBitmap(isIconDrawable: Boolean, avatarBitmap: Bitmap) {

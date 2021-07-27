@@ -27,14 +27,16 @@
             android:id="@+id/avatars_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:minHeight="200dp"
             android:divider="@drawable/divider_vertical_blank"
             android:gravity="center"
-            android:columnCount="3"
             android:orientation="horizontal"
             android:showDividers="middle">
 
             <com.goodayapps.widget.AvatarView
                 android:id="@+id/avatarView0"
+                style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 android:src="@drawable/ic_bell"
@@ -47,6 +49,7 @@
 
             <com.goodayapps.widget.AvatarView
                 android:id="@+id/avatarView10"
+                style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 android:src="@drawable/ic_more"
@@ -59,6 +62,7 @@
 
             <com.goodayapps.widget.AvatarView
                 android:id="@+id/avatarView1"
+                style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 android:src="@drawable/ic_launcher_foreground"
@@ -77,16 +81,17 @@
 
             <com.goodayapps.widget.AvatarView
                 android:id="@+id/avatarView2"
+                style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 android:src="@drawable/avatar1"
-
                 app:avBackgroundColor="@color/colorPrimary"
                 app:avBorderColor="@color/colorAccent"
                 app:avBorderWidth="5dp" />
 
             <com.goodayapps.widget.AvatarView
                 android:id="@+id/avatarView3"
+                style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 android:fontFamily="@font/font_19849"
@@ -96,6 +101,7 @@
                 app:iconDrawableScale=".7"
                 app:placeholderText="AV" />
         </GridLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
