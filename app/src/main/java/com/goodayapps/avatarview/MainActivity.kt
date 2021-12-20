@@ -26,7 +26,8 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
 
-        avatar111.load("https://media4.giphy.com/media/f8hd7QP9LT31Rk2NG1/giphy.gif")
+//        avatar111.load("https://media4.giphy.com/media/f8hd7QP9LT31Rk2NG1/giphy.gif")
+        avatar111.load("https://comunitee.b-cdn.net/staging/avatars/users/hlHkulpffffqQr3NWcVKxI6GbSB3/65E808E7-3098-45CE-B0D6-E50B12912751_1640027738.jpeg")
     }
 
     private fun initViews() {

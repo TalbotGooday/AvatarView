@@ -40,6 +40,7 @@
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 android:src="@drawable/ic_bell"
+                android:scaleType="centerCrop"
                 app:avBorderColor="#FF0000"
                 app:avBorderColorSecondary="#FF9D00"
                 app:avBorderGradientAngle="135"

@@ -1,21 +1,7 @@
 package com.goodayapps.widget
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.LinearGradient
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PixelFormat
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.RectF
-import android.graphics.Shader
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.Animatable
-import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.ThumbnailUtils
@@ -200,7 +186,7 @@ class AvatarDrawable private constructor(
             is Animatable -> {
                 isIconDrawable = false
 
-                createAvatarBitmap(avatarDrawable, 1f)
+                createAnimatableAvatarBitmap(avatarDrawable)
             }
             is Drawable -> {
                 isIconDrawable = true
@@ -263,6 +249,19 @@ class AvatarDrawable private constructor(
         }
     }
 
+    private fun createAnimatableAvatarBitmap(
+        avatarDrawable: Drawable
+    ): Bitmap? {
+        val cropDrawable = CenterCropDrawable(avatarDrawable)
+
+        return Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888).also {
+            cropDrawable.setBounds(0, 0, size, size)
+
+            iconColorFilter?.let { filter -> cropDrawable.colorFilter = filter }
+
+            cropDrawable.draw(Canvas(it))
+        }
+    }
 
     private fun calculateBounds(): RectF {
         val availableWidth = size
@@ -279,7 +278,7 @@ class AvatarDrawable private constructor(
     private fun drawBorder() {
         if (border.width > 0) {
             if (((border.archesType == Border.ARCH_TYPE_DEFAULT && border.archesCount > 1)
-                    || border.archesType == Border.ARCH_TYPE_MIRROR && border.archesCount > 0)
+                        || border.archesType == Border.ARCH_TYPE_MIRROR && border.archesCount > 0)
                 && totalArchesDegreeArea > 0f
             ) {
                 drawArcBorder()
@@ -358,7 +357,7 @@ class AvatarDrawable private constructor(
 
     private fun calculateSpaceBetweenArches() =
         (totalArchesDegreeArea - (border.archesCount * individualArcDegreeLength)) /
-            (border.archesCount + if (totalArchesDegreeArea == 360f) 0 else 1)
+                (border.archesCount + if (totalArchesDegreeArea == 360f) 0 else 1)
 
     private fun calculateArcDegreeLength() =
         totalArchesDegreeArea / (if (border.archesType == Border.ARCH_TYPE_DEFAULT) {
@@ -382,8 +381,8 @@ class AvatarDrawable private constructor(
             val intrinsicHeightF = intrinsicHeight.toFloat()
             val intrinsicWidthF = intrinsicWidth.toFloat()
 
-            val ratioOfWidth = intrinsicWidthF/maxF
-            val ratioOfHeight = intrinsicHeightF/maxF
+            val ratioOfWidth = intrinsicWidthF / maxF
+            val ratioOfHeight = intrinsicHeightF / maxF
             val ratio = intrinsicWidth / intrinsicHeightF
 
             when {
@@ -395,7 +394,7 @@ class AvatarDrawable private constructor(
                     _width = intrinsicWidth / ratioOfWidth * ratio
                     _height = maxF
                 }
-                ratio == 1f ->{
+                ratio == 1f -> {
                     _width = maxF
                     _height = maxF
                 }
