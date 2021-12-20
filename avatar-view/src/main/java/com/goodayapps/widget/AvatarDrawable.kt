@@ -14,6 +14,8 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.ThumbnailUtils
@@ -190,34 +192,20 @@ class AvatarDrawable private constructor(
 
         val avatarBitmap: Bitmap? = when (avatarDrawable) {
             is BitmapDrawable -> {
+                isIconDrawable = false
                 val bitmapSize = size - avatarMargin
 
                 ThumbnailUtils.extractThumbnail(avatarDrawable.bitmap, bitmapSize, bitmapSize)
             }
+            is Animatable -> {
+                isIconDrawable = false
+
+                createAvatarBitmap(avatarDrawable, 1f)
+            }
             is Drawable -> {
                 isIconDrawable = true
 
-                val sizeHelper = Size(
-                    intrinsicWidth = avatarDrawable.intrinsicWidth,
-                    intrinsicHeight = avatarDrawable.intrinsicHeight,
-                    max = size,
-                    scale = iconDrawableScale
-                )
-
-                val width = sizeHelper.width
-                val height = sizeHelper.height
-
-                if (width > 0 && height > 0) {
-                    Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also {
-                        avatarDrawable.setBounds(0, 0, width, height)
-
-                        iconColorFilter?.let { filter -> avatarDrawable.colorFilter = filter }
-
-                        avatarDrawable.draw(Canvas(it))
-                    }
-                } else {
-                    null
-                }
+                createAvatarBitmap(avatarDrawable, iconDrawableScale)
             }
             else -> {
                 null
@@ -246,6 +234,33 @@ class AvatarDrawable private constructor(
 
         canvas.drawBitmap(bufferBitmap, Matrix(), null)
         canvas.restore()
+    }
+
+    private fun createAvatarBitmap(
+        avatarDrawable: Drawable,
+        scale: Float
+    ): Bitmap? {
+        val sizeHelper = Size(
+            intrinsicWidth = avatarDrawable.intrinsicWidth,
+            intrinsicHeight = avatarDrawable.intrinsicHeight,
+            max = size,
+            scale = scale
+        )
+
+        val width = sizeHelper.width
+        val height = sizeHelper.height
+
+        return if (width > 0 && height > 0) {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also {
+                avatarDrawable.setBounds(0, 0, width, height)
+
+                iconColorFilter?.let { filter -> avatarDrawable.colorFilter = filter }
+
+                avatarDrawable.draw(Canvas(it))
+            }
+        } else {
+            null
+        }
     }
 
 

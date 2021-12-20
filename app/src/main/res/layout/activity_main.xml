@@ -35,6 +35,7 @@
             android:showDividers="middle">
 
             <com.goodayapps.widget.AvatarView
+                android:id="@+id/avatar111"
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
