@@ -45,9 +45,9 @@
                 app:avBorderColorSecondary="#FF9D00"
                 app:avBorderGradientAngle="135"
                 app:avBorderWidth="5dp"
-                app:iconDrawableScale=".3"
+                app:iconDrawableScale="1"
                 app:placeholderText="OMG" />
-
+<!--
             <com.goodayapps.widget.AvatarView
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
@@ -108,7 +108,7 @@
                 app:avBorderColor="@color/colorAccent"
                 app:avBorderWidth="5dp"
                 app:iconDrawableScale=".7"
-                app:placeholderText="AV" />
+                app:placeholderText="AV" />-->
         </GridLayout>
 
         <LinearLayout

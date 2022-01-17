@@ -14,6 +14,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
 import coil.load
 import coil.request.CachePolicy
+import coil.util.DebugLogger
 import com.goodayapps.widget.AvatarDrawable
 import com.goodayapps.widget.AvatarView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,7 +28,13 @@ class MainActivity : AppCompatActivity() {
         initViews()
 
 //        avatar111.load("https://media4.giphy.com/media/f8hd7QP9LT31Rk2NG1/giphy.gif")
-        avatar111.load("https://comunitee.b-cdn.net/staging/avatars/users/hlHkulpffffqQr3NWcVKxI6GbSB3/65E808E7-3098-45CE-B0D6-E50B12912751_1640027738.jpeg")
+//        avatar111.load("https://data.whicdn.com/images/337953887/original.gif"){
+//            placeholder(R.drawable.ic_circle)
+////            crossfade(false)
+//            error(R.drawable.ic_circle)
+//        }
+
+        avatar111.blurHash = "UBIEhD?d01D%0MbcIVWA0gIpV[f69zSO-o%2"
     }
 
     private fun initViews() {
@@ -130,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initCoil(context: Context): ImageLoader {
         val builder = ImageLoader.Builder(context)
-            .memoryCachePolicy(CachePolicy.ENABLED)
+            .memoryCachePolicy(CachePolicy.DISABLED)
             .crossfade(true)
             .componentRegistry {
                 if (Build.VERSION.SDK_INT >= 28) {
@@ -140,6 +147,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 add(SvgDecoder(context))
             }
+
+        if (BuildConfig.DEBUG) {
+            builder.logger(DebugLogger())
+        }
 
         val imageLoader = builder.build()
 

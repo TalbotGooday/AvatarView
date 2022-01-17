@@ -9,6 +9,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-hdpi/ic_bell.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/divider_blank.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/ic_baseline_cloud_circle_24.xml" value="0.371875" />
+        <entry key="app/src/main/res/drawable/ic_circle.xml" value="0.371875" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35025641025641024" />
       </map>
     </option>
