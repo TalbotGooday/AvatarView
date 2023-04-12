@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
@@ -192,6 +193,8 @@ open class AvatarView : AppCompatImageView {
         }
 
         canvas?.let { newDrawable.draw(it) }
+
+        postInvalidate()
     }
 
     private fun configureStyleValues(typedArray: TypedArray) {

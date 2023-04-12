@@ -1,21 +1,11 @@
 package com.goodayapps.avatarview
 
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
-import coil.Coil
-import coil.ComponentRegistry
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.decode.SvgDecoder
 import coil.load
-import coil.request.CachePolicy
-import coil.util.DebugLogger
 import com.goodayapps.avatarview.databinding.ActivityMainBinding
 import com.goodayapps.widget.AvatarDrawable
 import com.goodayapps.widget.AvatarView
@@ -29,7 +19,11 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
 
-        binding.avatar111.load("https://media4.giphy.com/media/f8hd7QP9LT31Rk2NG1/giphy.gif")
+        binding.korraAvatar.load("https://media4.giphy.com/media/f8hd7QP9LT31Rk2NG1/giphy.gif")
+        binding.blurHashAvatar.loadWithBlurHash(
+            src = "https://www.terriwindling.com/.a/6a00e54fcf7385883401b7c74c966d970b-800wi",
+            blurHash = "UGAKELD+bxs*_Ko#N0%KxuxtoeR+NNobxrM#"
+        )
     }
 
     private fun initViews() {

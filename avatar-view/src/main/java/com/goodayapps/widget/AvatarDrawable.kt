@@ -181,7 +181,7 @@ class AvatarDrawable private constructor(
                 isIconDrawable = false
                 val bitmapSize = size - avatarMargin
 
-                ThumbnailUtils.extractThumbnail(avatarDrawable.bitmap, bitmapSize, bitmapSize)
+                ThumbnailUtils.extractThumbnail(avatarDrawable.bitmap.copy(Bitmap.Config.ARGB_8888, false), bitmapSize, bitmapSize)
             }
             is Animatable -> {
                 isIconDrawable = false
