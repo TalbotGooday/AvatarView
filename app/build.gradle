@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.goodayapps.avatarview"
-        minSdkVersion 19
-        targetSdkVersion 31
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -31,17 +30,20 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     //Coil
-    api("io.coil-kt:coil:1.4.0")
-    api("io.coil-kt:coil-gif:1.4.0")
-    api("io.coil-kt:coil-svg:1.4.0")
+    api("io.coil-kt:coil:2.3.0")
+    api("io.coil-kt:coil-gif:2.3.0")
+    api("io.coil-kt:coil-svg:2.3.0")
 
     implementation(project(':avatar-view'))
 }

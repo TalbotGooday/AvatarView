@@ -73,7 +73,7 @@ class AvatarDrawable private constructor(
 
     private val clipPaint = Paint().apply {
         this.color = Color.WHITE
-        this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
+        this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)
         this.style = Paint.Style.FILL_AND_STROKE
     }
 
@@ -206,11 +206,22 @@ class AvatarDrawable private constructor(
             avatarBackgroundPaint
         )
 
+        bufferCanvas.save()
+        val path = Path()
+        path.addCircle(
+            circleCenter,
+            circleCenter,
+            backgroundCircleRadius,
+            Path.Direction.CCW
+        )
+        bufferCanvas.clipPath(path)
+
         if (avatarBitmap == null) {
             drawPlaceholder()
         } else {
             drawBitmap(isIconDrawable, avatarBitmap)
         }
+        bufferCanvas.restore()
 
         //Draw volumetric gradient
         drawVolume(avatarBitmap != null)

@@ -93,6 +93,7 @@ open class AvatarView : AppCompatImageView {
             field = value
             postInvalidate()
         }
+
     var archesCount = 0
         set(value) {
             field = value

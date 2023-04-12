@@ -31,7 +31,12 @@ class CenterCropDrawable(private val target: Drawable) : Drawable() {
     override fun draw(canvas: Canvas) {
         canvas.save()
         canvas.clipRect(bounds)
-        target.draw(canvas)
+        try {
+            target.draw(canvas)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         canvas.restore()
     }
 

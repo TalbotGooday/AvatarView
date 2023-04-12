@@ -28,9 +28,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:columnCount="3"
-            android:minHeight="200dp"
             android:divider="@drawable/divider_vertical_blank"
             android:gravity="center"
+            android:minHeight="200dp"
             android:orientation="horizontal"
             android:showDividers="middle">
 
@@ -39,76 +39,92 @@
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
-                android:src="@drawable/ic_bell"
                 android:scaleType="centerCrop"
+                android:src="@drawable/ic_bell"
                 app:avBorderColor="#FF0000"
                 app:avBorderColorSecondary="#FF9D00"
                 app:avBorderGradientAngle="135"
                 app:avBorderWidth="5dp"
                 app:iconDrawableScale="1"
                 app:placeholderText="OMG" />
-<!--
+
             <com.goodayapps.widget.AvatarView
+                android:id="@+id/avatar1111"
                 style="@style/AvatarStyleHelper"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
-                android:src="@drawable/ic_baseline_cloud_circle_24"
+                app:avBackgroundColor="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_bell"
                 app:avBorderColor="#FF0000"
                 app:avBorderColorSecondary="#FF9D00"
                 app:avBorderGradientAngle="135"
                 app:avBorderWidth="5dp"
-                app:iconDrawableScale=".3"
+                app:iconDrawableScale=".5"
                 app:placeholderText="OMG" />
 
-            <com.goodayapps.widget.AvatarView
-                style="@style/AvatarStyleHelper"
-                android:layout_width="@dimen/avatar_size"
-                android:layout_height="@dimen/avatar_size"
-                android:src="@drawable/ic_more"
-                app:avBorderColor="#FF0000"
-                app:avBorderColorSecondary="#FF9D00"
-                app:avBorderGradientAngle="135"
-                app:avBorderWidth="5dp"
-                app:iconDrawableScale=".3"
-                app:placeholderText="OMG" />
+            <!--
+                        <com.goodayapps.widget.AvatarView
+                            style="@style/AvatarStyleHelper"
+                            android:layout_width="@dimen/avatar_size"
+                            android:layout_height="@dimen/avatar_size"
+                            android:src="@drawable/ic_baseline_cloud_circle_24"
+                            app:avBorderColor="#FF0000"
+                            app:avBorderColorSecondary="#FF9D00"
+                            app:avBorderGradientAngle="135"
+                            app:avBorderWidth="5dp"
+                            app:iconDrawableScale=".3"
+                            app:placeholderText="OMG" />
 
-            <com.goodayapps.widget.AvatarView
-                style="@style/AvatarStyleHelper"
-                android:layout_width="@dimen/avatar_size"
-                android:layout_height="@dimen/avatar_size"
-                android:src="@drawable/ic_launcher_foreground"
-                app:avArchesAngle="0"
-                app:avArchesCount="4"
-                app:avArchesDegreeArea="90"
-                app:avArchesType="single"
-                app:avAvatarMargin="5dp"
-                app:avBackgroundColor="@color/colorPrimary"
-                app:avBorderColor="#4D8989A8"
-                app:avBorderWidth="5dp"
-                app:avTextSizePercentage=".7"
-                app:avVolumetricType="none"
-                app:iconDrawableScale=".7"
-                app:placeholderText="AV" />
+                        <com.goodayapps.widget.AvatarView
+                            style="@style/AvatarStyleHelper"
+                            android:layout_width="@dimen/avatar_size"
+                            android:layout_height="@dimen/avatar_size"
+                            android:src="@drawable/ic_more"
+                            app:avBorderColor="#FF0000"
+                            app:avBorderColorSecondary="#FF9D00"
+                            app:avBorderGradientAngle="135"
+                            app:avBorderWidth="5dp"
+                            app:iconDrawableScale=".3"
+                            app:placeholderText="OMG" />
 
-            <com.goodayapps.widget.AvatarView
-                style="@style/AvatarStyleHelper"
-                android:layout_width="@dimen/avatar_size"
-                android:layout_height="@dimen/avatar_size"
-                android:src="@drawable/avatar1"
-                app:avBackgroundColor="@color/colorPrimary"
-                app:avBorderColor="@color/colorAccent"
-                app:avBorderWidth="5dp" />
+                        <com.goodayapps.widget.AvatarView
+                            style="@style/AvatarStyleHelper"
+                            android:layout_width="@dimen/avatar_size"
+                            android:layout_height="@dimen/avatar_size"
+                            android:src="@drawable/ic_launcher_foreground"
+                            app:avArchesAngle="0"
+                            app:avArchesCount="4"
+                            app:avArchesDegreeArea="90"
+                            app:avArchesType="single"
+                            app:avAvatarMargin="5dp"
+                            app:avBackgroundColor="@color/colorPrimary"
+                            app:avBorderColor="#4D8989A8"
+                            app:avBorderWidth="5dp"
+                            app:avTextSizePercentage=".7"
+                            app:avVolumetricType="none"
+                            app:iconDrawableScale=".7"
+                            app:placeholderText="AV" />
 
-            <com.goodayapps.widget.AvatarView
-                style="@style/AvatarStyleHelper"
-                android:layout_width="@dimen/avatar_size"
-                android:layout_height="@dimen/avatar_size"
-                android:fontFamily="@font/font_19849"
-                app:avBackgroundColor="@color/colorPrimary"
-                app:avBorderColor="@color/colorAccent"
-                app:avBorderWidth="5dp"
-                app:iconDrawableScale=".7"
-                app:placeholderText="AV" />-->
+                        <com.goodayapps.widget.AvatarView
+                            style="@style/AvatarStyleHelper"
+                            android:layout_width="@dimen/avatar_size"
+                            android:layout_height="@dimen/avatar_size"
+                            android:src="@drawable/avatar1"
+                            app:avBackgroundColor="@color/colorPrimary"
+                            app:avBorderColor="@color/colorAccent"
+                            app:avBorderWidth="5dp" />
+
+                        <com.goodayapps.widget.AvatarView
+                            style="@style/AvatarStyleHelper"
+                            android:layout_width="@dimen/avatar_size"
+                            android:layout_height="@dimen/avatar_size"
+                            android:fontFamily="@font/font_19849"
+                            app:avBackgroundColor="@color/colorPrimary"
+                            app:avBorderColor="@color/colorAccent"
+                            app:avBorderWidth="5dp"
+                            app:iconDrawableScale=".7"
+                            app:placeholderText="AV" />-->
         </GridLayout>
 
         <LinearLayout
