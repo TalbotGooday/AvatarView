@@ -5,7 +5,6 @@ import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
@@ -13,9 +12,11 @@ import androidx.annotation.Dimension
 import androidx.annotation.IntRange
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
-import com.goodayapps.widget.utils.*
+import com.goodayapps.widget.utils.BlurHashDecoder
 import com.goodayapps.widget.utils.colorAttribute
 import com.goodayapps.widget.utils.convertDpToPixel
+import com.goodayapps.widget.utils.getColorOrNull
+import com.goodayapps.widget.utils.getTypefaceOrNull
 
 open class AvatarView : AppCompatImageView {
     companion object {
@@ -68,7 +69,7 @@ open class AvatarView : AppCompatImageView {
             field = value
             postInvalidate()
         }
-    var volumetricType: AvatarDrawable.Volumetric = AvatarDrawable.Volumetric.ALL
+    var volumetricType: AvatarDrawable.Volumetric = AvatarDrawable.Volumetric.NONE
         set(value) {
             field = value
             postInvalidate()
@@ -153,21 +154,22 @@ open class AvatarView : AppCompatImageView {
                 typedArray.recycle()
             }
         }
+
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         //Reject drawing original image
     }
 
-    override fun dispatchDraw(canvas: Canvas?) {
+    override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
 
-        val size =
-            measuredWidth.coerceAtMost(measuredHeight).coerceAtLeast(context.convertDpToPixel(10))
+        val avatarDrawableSize =
+            measuredWidth.coerceIn(context.convertDpToPixel(10)..measuredHeight)
 
         val newDrawable = avatarDrawable {
             drawable(drawable)
-            size(size)
+            size(avatarDrawableSize)
             backgroundColor(backgroundPlaceholderColor)
             volumetric(this@AvatarView.volumetricType)
             iconDrawableScale(this@AvatarView.iconDrawableScale)
@@ -187,7 +189,7 @@ open class AvatarView : AppCompatImageView {
             placeholder {
                 text(placeholderText)
                 color(textColor)
-                size((if (textSize <= 0f) size / 3f else textSize) * textSizePercentage)
+                size((if (textSize <= 0f) avatarDrawableSize / 3f else textSize) * textSizePercentage)
                 typeface(textTypeface)
             }
         }

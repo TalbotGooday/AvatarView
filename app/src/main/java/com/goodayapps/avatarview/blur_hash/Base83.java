@@ -5,6 +5,9 @@ final class Base83 {
     static final char[] ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~"
             .toCharArray();
 
+    private Base83() {
+    }
+
     private static int indexOf(char[] a, char key) {
         for (int i = 0; i < a.length; i++) {
             if (a[i] == key) {
@@ -23,7 +26,7 @@ final class Base83 {
     static void encode(long value, int length, char[] buffer, int offset) {
         int exp = 1;
         for (int i = 1; i <= length; i++, exp *= 83) {
-            int digit = (int)(value / exp % 83);
+            int digit = (int) (value / exp % 83);
             buffer[offset + length - i] = ALPHABET[digit];
         }
     }
@@ -35,8 +38,5 @@ final class Base83 {
             result = result * 83 + indexOf(ALPHABET, chars[i]);
         }
         return result;
-    }
-
-    private Base83() {
     }
 }

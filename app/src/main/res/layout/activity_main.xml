@@ -418,5 +418,14 @@
                 tools:ignore="HardcodedText" />
 
         </RadioGroup>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/openList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="List sample"
+            android:textColor="@android:color/white" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

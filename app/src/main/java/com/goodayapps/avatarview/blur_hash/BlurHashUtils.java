@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 
 final class BlurHashUtils {
 
+    private BlurHashUtils() {
+    }
+
     static double sRGBToLinear(long value) {
         double v = value / 255.0;
         if (v <= 0.04045) {
@@ -16,9 +19,9 @@ final class BlurHashUtils {
     static long linearTosRGB(double value) {
         double v = Math.max(0, Math.min(1, value));
         if (v <= 0.0031308) {
-            return (long)(v * 12.92 * 255 + 0.5);
+            return (long) (v * 12.92 * 255 + 0.5);
         } else {
-            return (long)((1.055 * Math.pow(v, 1 / 2.4) - 0.055) * 255 + 0.5);
+            return (long) ((1.055 * Math.pow(v, 1 / 2.4) - 0.055) * 255 + 0.5);
         }
     }
 
@@ -49,7 +52,5 @@ final class BlurHashUtils {
                     subsetPixels, row * width, width);
         }
         return subsetPixels;
-    }
-    private BlurHashUtils() {
     }
 }

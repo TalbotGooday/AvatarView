@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
  */
 public final class BlurHash {
 
+    private BlurHash() {
+    }
+
     private static void applyBasisFunction(int[] pixels, int width, int height,
                                            double normalisation, int i, int j,
                                            double[][] factors, int index) {
@@ -22,12 +25,12 @@ public final class BlurHash {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 double basis = normalisation
-                               * Math.cos((Math.PI * i * x) / width)
-                               * Math.cos((Math.PI * j * y) / height);
+                        * Math.cos((Math.PI * i * x) / width)
+                        * Math.cos((Math.PI * j * y) / height);
                 int pixel = pixels[y * width + x];
                 r += basis * sRGBToLinear((pixel >> 16) & 0xff);
-                g += basis * sRGBToLinear((pixel >> 8)  & 0xff);
-                b += basis * sRGBToLinear( pixel        & 0xff);
+                g += basis * sRGBToLinear((pixel >> 8) & 0xff);
+                b += basis * sRGBToLinear(pixel & 0xff);
             }
         }
         double scale = 1.0 / (width * height);
@@ -62,7 +65,8 @@ public final class BlurHash {
 
     /**
      * Calculates the blur hash from the given image.
-     * @param bitmap the image
+     *
+     * @param bitmap     the image
      * @param componentX number of components in the x dimension
      * @param componentY number of components in the y dimension
      * @return the blur hash
@@ -77,9 +81,9 @@ public final class BlurHash {
     /**
      * Calculates the blur hash from the given pixels.
      *
-     * @param pixels width * height pixels, encoded as RGB integers (0xAARRGGBB)
-     * @param width width of the bitmap
-     * @param height height of the bitmap
+     * @param pixels     width * height pixels, encoded as RGB integers (0xAARRGGBB)
+     * @param width      width of the bitmap
+     * @param height     height of the bitmap
      * @param componentX number of components in the x dimension
      * @param componentY number of components in the y dimension
      * @return the blur hash
@@ -126,8 +130,5 @@ public final class BlurHash {
             Base83.encode(encodeAC(factors[i], maximumValue), 2, hash, 6 + 2 * (i - 1));
         }
         return new String(hash);
-    }
-
-    private BlurHash() {
     }
 }

@@ -6,6 +6,7 @@ import coil.Coil
 import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import coil.decode.SvgDecoder
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 
@@ -23,6 +24,7 @@ class App : Application() {
                 } else {
                     add(GifDecoder.Factory())
                 }
+                add(SvgDecoder.Factory())
             }
             .diskCachePolicy(CachePolicy.DISABLED)
             .logger(DebugLogger())

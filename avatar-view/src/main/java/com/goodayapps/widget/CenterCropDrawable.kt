@@ -1,6 +1,10 @@
 package com.goodayapps.widget
 
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.Matrix
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.annotation.IntRange
 import kotlin.math.roundToInt

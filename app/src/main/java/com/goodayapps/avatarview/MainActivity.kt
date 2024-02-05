@@ -1,5 +1,6 @@
 package com.goodayapps.avatarview
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.SeekBar
@@ -7,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import coil.load
 import com.goodayapps.avatarview.databinding.ActivityMainBinding
+import com.goodayapps.avatarview.list_screen.ListActivity
 import com.goodayapps.widget.AvatarDrawable
 import com.goodayapps.widget.AvatarView
 
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        binding.openList.setOnClickListener {
+            startActivity(Intent(this, ListActivity::class.java))
+        }
+
         binding.iconDrawableScaleSeek.setOnSeekBarChangeListener(object :
             OnSeekBarChangeListener() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
