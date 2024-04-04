@@ -140,6 +140,19 @@
                 app:avBorderWidth="5dp"
                 app:iconDrawableScale="1"
                 app:placeholderText="OMG" />
+
+            <com.goodayapps.widget.AvatarView
+                android:id="@+id/downloadable_avatar"
+                style="@style/AvatarStyleHelper"
+                android:layout_width="@dimen/avatar_size"
+                android:layout_height="@dimen/avatar_size"
+                android:fontFamily="@font/aclonica"
+                android:scaleType="centerCrop"
+                app:avBorderColor="#FF0000"
+                app:avBorderColorSecondary="#FF9D00"
+                app:avBorderWidth="5dp"
+                app:iconDrawableScale="1"
+                app:placeholderText="OMG" />
         </GridLayout>
 
         <LinearLayout
